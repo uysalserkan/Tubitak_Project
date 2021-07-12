@@ -1,5 +1,7 @@
 package al.uys.project_demo.Events.services;
 
+import al.uys.project_demo.Commons.MessageResponse;
+import al.uys.project_demo.Commons.enums.MessageResponseType;
 import al.uys.project_demo.Events.controllers.requests.AddEventRequest;
 import al.uys.project_demo.Events.controllers.requests.UpdateEventRequest;
 import al.uys.project_demo.Events.models.Event;
@@ -21,12 +23,19 @@ public class EventService {
     return eventRepository.findAll();
   }
 
-  public Event addEvent(AddEventRequest event) {
-    eventRepository.save(event.toEvent());
-    return event.toEvent();
+  public MessageResponse addEvent(AddEventRequest event) {
+    try {
+
+      eventRepository.save(event.toEvent());
+    } catch (Exception e) {
+      return new MessageResponse(e.toString(), MessageResponseType.ERROR);
+    }
+    return new MessageResponse(
+        "%s adına sahip event sisteme eklendi.".formatted(event.getEventName()),
+        MessageResponseType.SUCCESS);
   }
 
-  public Event updateEvent(UpdateEventRequest updatedEvent, Long id) {
+  public MessageResponse updateEvent(UpdateEventRequest updatedEvent, Long id) {
     Event event =
         eventRepository
             .findById(id)
@@ -40,10 +49,12 @@ public class EventService {
 
     eventRepository.save(event);
 
-    return updatedEvent.toEvent();
+    return new MessageResponse(
+        "%d ID'ye sahip olan event başarı ile güncellendi.".formatted(id),
+        MessageResponseType.SUCCESS);
   }
 
-  public String deleteEvent(Long id) {
+  public MessageResponse deleteEvent(Long id) {
     if (!eventRepository.existsById(id)) {
       //      return "%d ID'ye sahip bir event bulunamadı. Lütfen kontol edip tekrar
       // deneyiniz..".formatted(id);
@@ -53,6 +64,7 @@ public class EventService {
     }
 
     eventRepository.deleteById(id);
-    return "%d ID'ye sahip event silindi.".formatted(id);
+    return new MessageResponse(
+        "%d ID'ye sahip event silindi.".formatted(id), MessageResponseType.SUCCESS);
   }
 }

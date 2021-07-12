@@ -7,9 +7,10 @@
 - [x] **PUT** ile `localhost:8080/events/{id}` adresi tanıımlandı.
 - [x] **DELETE** ile `localhost:8080/events/{id}` adresi tanımlandı.
 - [x] Question ve Answer modelleri oluşturuldu.
+- [x] Daha iyi bir görünüm için **Message Response** oluşturuldu.
 
 ## Devam Eden Aşamalar
 
-- [ ] Daha iyi bir görünüm için **Message Response** oluştur.
 - [ ] Question ve Answer için API bağlantıları oluşturualacak.
 - [ ] Kullanıcının bir event'e kayıdı için API bağlantısı sağlanacak.
+- [ ] Hata aldınğında da tekrardan MessageResponse ile cevap verilecek.
