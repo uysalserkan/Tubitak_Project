@@ -1,6 +1,7 @@
 package al.uys.project_demo.Events.controllers;
 
 import al.uys.project_demo.Events.controllers.requests.AddEventRequest;
+import al.uys.project_demo.Events.controllers.requests.UpdateEventRequest;
 import al.uys.project_demo.Events.models.Event;
 import al.uys.project_demo.Events.services.EventService;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +27,16 @@ public class EventController {
   @PostMapping
   public Event postEvent(@Valid @RequestBody AddEventRequest event) {
     return eventService.addEvent(event);
+  }
+
+  @PutMapping("/{id}")
+  public Event putEvent(
+      @Valid @RequestBody UpdateEventRequest updatedEvent, @PathVariable Long id) {
+    return eventService.updateEvent(updatedEvent, id);
+  }
+
+  @DeleteMapping("/{id}")
+  public String deleteEvent(@PathVariable Long id){
+    return eventService.deleteEvent(id);
   }
 }
