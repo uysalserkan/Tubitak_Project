@@ -88,7 +88,17 @@ public class Event {
     this.questions.add(question);
   }
 
-  public void addQRCode(QRCode qrCode) {
+  /*
+   * Bu fonksiyonlar ile kullanıcıların `event`'e katılması sağlanacaktır.
+   */
+
+  public void addAttandee(QRCode qrCode) {
     this.qrCodes.add(qrCode);
+    this.quotas--;
+  }
+
+  public void removeAttandee(QRCode qrCode) {
+    this.qrCodes.remove(qrCode);
+    this.quotas++;
   }
 }
