@@ -1,6 +1,7 @@
 package al.uys.project_demo.Events.models;
 
 import al.uys.project_demo.QRCodes.models.QRCodes;
+import al.uys.project_demo.QuesAnsw.models.Question;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -44,6 +45,9 @@ public class Event {
   @JoinColumn(name = "event_id")
   private Set<QRCodes> qrCodes;
 
+  @OneToMany(mappedBy = "event")
+  private Set<Question> questions;
+
   // TODO: Questions modeli eklendikten sonra OneToMany ilişkisi kurulacak.
 
   protected Event() {}
@@ -76,5 +80,9 @@ public class Event {
 
     // TODO: Buraya eklenecek olan soruların updatesi gelecek.
 
+  }
+
+  public void addQuestion(Question question) {
+    this.questions.add(question);
   }
 }
