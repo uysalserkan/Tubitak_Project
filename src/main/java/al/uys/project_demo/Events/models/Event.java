@@ -1,12 +1,12 @@
 package al.uys.project_demo.Events.models;
 
-import al.uys.project_demo.QRCodes.models.QRCodes;
+import al.uys.project_demo.QRCodes.models.QRCode;
+import al.uys.project_demo.QuesAnsw.models.Question;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -40,9 +40,15 @@ public class Event {
 
   @Embedded private Location location;
 
-  @OneToMany
-  @JoinColumn(name = "event_id")
-  private Set<QRCodes> qrCodes;
+  @ManyToMany
+  @JoinTable(
+      name = "Event_attendees",
+      joinColumns = @JoinColumn(name = "event_id"),
+      inverseJoinColumns = @JoinColumn(name = "tc_no"))
+  private Set<QRCode> qrCodes;
+
+  @OneToMany(mappedBy = "event")
+  private Set<Question> questions;
 
   // TODO: Questions modeli eklendikten sonra OneToMany ilişkisi kurulacak.
 
@@ -76,5 +82,23 @@ public class Event {
 
     // TODO: Buraya eklenecek olan soruların updatesi gelecek.
 
+  }
+
+  public void addQuestion(Question question) {
+    this.questions.add(question);
+  }
+
+  /*
+   * Bu fonksiyonlar ile kullanıcıların `event`'e katılması sağlanacaktır.
+   */
+
+  public void addAttandee(QRCode qrCode) {
+    this.qrCodes.add(qrCode);
+    this.quotas--;
+  }
+
+  public void removeAttandee(QRCode qrCode) {
+    this.qrCodes.remove(qrCode);
+    this.quotas++;
   }
 }
