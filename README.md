@@ -16,6 +16,13 @@
 - [ ] Question ve Answer için API bağlantıları oluşturualacak.
 - [ ] Kullanıcının bir event'e kayıdı için API bağlantısı sağlanacak.
 - [ ] Hata aldınğında da tekrardan MessageResponse ile cevap verilecek.
+- [ ] User Registiration API tanımlanmalı mı?
+
+### Info
+
+- Bir kullanıcının bir etkinliğe daha önceden kayıtlı mı olduğunu **QRCode** üzerinden kontrol edeceğiz.
+- **Event** sınıfı hangi **user**'in hangi etkinliğe kayıt olunmuş olduğunu göremeyecek direkt olarak. Bunun yerine ***QRCodes***
+  sorgusu yapması gerekecek.
 
 ## React
 

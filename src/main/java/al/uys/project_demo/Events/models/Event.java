@@ -1,6 +1,7 @@
 package al.uys.project_demo.Events.models;
 
-import al.uys.project_demo.QRCodes.models.QRCode;
+import al.uys.project_demo.Events.enums.EventCategory;
+import al.uys.project_demo.User.models.User;
 import al.uys.project_demo.QuesAnsw.models.Question;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,14 +40,10 @@ public class Event {
   @Builder.Default
   private Integer quotas = 25;
 
-  @Embedded private Location location;
+  @Enumerated(EnumType.STRING)
+  private EventCategory eventCategoryList;
 
-  @ManyToMany
-  @JoinTable(
-      name = "Event_attendees",
-      joinColumns = @JoinColumn(name = "event_id"),
-      inverseJoinColumns = @JoinColumn(name = "tc_no"))
-  private Set<QRCode> qrCodes;
+  @Embedded private Location location;
 
   @OneToMany(mappedBy = "event")
   private Set<Question> questions;
@@ -60,18 +58,22 @@ public class Event {
       LocalDate eventStartDate,
       LocalDate eventEndDate,
       Integer quotas,
-      Location location) {
+      Location location,
+      EventCategory eventCategoryList) {
     this.eventName = eventName;
     this.eventStatus = eventStatus;
     this.eventStartDate = eventStartDate;
     this.eventEndDate = eventEndDate;
     this.quotas = quotas;
     this.location = location;
+    this.eventCategoryList = eventCategoryList;
 
     // TODO: Buraya eklenecek olan soruların ataması gelecek.
 
   }
-
+  // TODO: Question ekleme sistemi ya constructor üzerinden veya methodlar üzerinden implemente
+  // edilecek.
+  // TODO: User kayıt entegre edilecek.
   public void updateEvent(final Event newEvent) {
     this.eventName = newEvent.eventName;
     this.eventStatus = newEvent.eventStatus;
@@ -79,6 +81,7 @@ public class Event {
     this.eventEndDate = newEvent.eventEndDate;
     this.quotas = newEvent.quotas;
     this.location = newEvent.location;
+    this.eventCategoryList = newEvent.eventCategoryList;
 
     // TODO: Buraya eklenecek olan soruların updatesi gelecek.
 
@@ -88,17 +91,15 @@ public class Event {
     this.questions.add(question);
   }
 
-  /*
-   * Bu fonksiyonlar ile kullanıcıların `event`'e katılması sağlanacaktır.
-   */
+  public void removeQuestion(Question question) {
+    this.questions.remove(question);
+  }
 
-  public void addAttandee(QRCode qrCode) {
-    this.qrCodes.add(qrCode);
+  public void addAttandee() {
     this.quotas--;
   }
 
-  public void removeAttandee(QRCode qrCode) {
-    this.qrCodes.remove(qrCode);
+  public void removeAttandee() {
     this.quotas++;
   }
 }
