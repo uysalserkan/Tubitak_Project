@@ -22,7 +22,8 @@ public class User {
   @Column(nullable = false)
   private String lastName;
 
-  @OneToMany private Set<QRCode> qrCodeSet;
+  @OneToMany(cascade = CascadeType.ALL)
+  private Set<QRCode> qrCodeSet;
 
   protected User() {}
 

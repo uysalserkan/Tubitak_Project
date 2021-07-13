@@ -1,7 +1,9 @@
 package al.uys.project_demo.User.controllers.response;
 
 import al.uys.project_demo.User.models.User;
+import lombok.Getter;
 
+@Getter
 public class UserResponse {
   private String tcNo;
   private String firstName;

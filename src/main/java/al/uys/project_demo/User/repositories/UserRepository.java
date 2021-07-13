@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, String> {
   User findByTcNo(String tcNo);
 
+  Boolean existsByTcNo(String tcNo);
+
   User removeByTcNo(String tcNo);
 }

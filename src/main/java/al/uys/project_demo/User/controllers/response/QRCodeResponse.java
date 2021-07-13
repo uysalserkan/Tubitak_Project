@@ -1,7 +1,9 @@
 package al.uys.project_demo.User.controllers.response;
 
 import al.uys.project_demo.User.models.QRCode;
+import lombok.Getter;
 
+@Getter
 public class QRCodeResponse {
 
   private final Long eventId;
