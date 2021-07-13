@@ -5,7 +5,7 @@ function NavBar() {
     return (
 
         <div>
-            <Nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+            <Nav className="navbar align-top navbar-expand-sm navbar-dark bg-dark">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="#">Event Platform</a>
                     <Button className="navbar-toggler" type="button" data-bs-toggle="collapse"

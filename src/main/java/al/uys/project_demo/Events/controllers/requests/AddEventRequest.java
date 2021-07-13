@@ -1,5 +1,6 @@
 package al.uys.project_demo.Events.controllers.requests;
 
+import al.uys.project_demo.Events.enums.EventCategory;
 import al.uys.project_demo.Events.models.Event;
 import al.uys.project_demo.Events.models.Location;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @ToString
@@ -39,6 +41,9 @@ public class AddEventRequest {
   //  @NotBlank(message = "EEEEEE")
   private final AddLocationRequest location;
 
+  @NotEmpty(message = "Etkinlik categorisinden en az 1 tane seçmelisiniz..")
+  private final EventCategory eventCategoryList;
+
   public Event toEvent() {
     return new Event(
         eventName,
@@ -46,7 +51,8 @@ public class AddEventRequest {
         LocalDate.parse(startDate),
         LocalDate.parse(endDate),
         quota,
-        location.toLocation());
+        location.toLocation(),
+        eventCategoryList);
   }
 }
 
