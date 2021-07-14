@@ -1,6 +1,6 @@
 package al.uys.project_demo.Events.controllers.responses;
 
-import al.uys.project_demo.Events.controllers.requests.AddLocationRequest;
+import al.uys.project_demo.Events.enums.EventCategory;
 import al.uys.project_demo.Events.models.Event;
 import lombok.Getter;
 
@@ -13,6 +13,7 @@ public class EventResponse {
   private final boolean eventStatus;
   private final int quota;
   private final LocationResponse location;
+  private final EventCategory eventCategory;
 
   public EventResponse(Event event) {
     this.id = event.getId();
@@ -22,5 +23,6 @@ public class EventResponse {
     this.quota = event.getQuotas();
     this.eventStatus = event.getEventStatus();
     this.location = new LocationResponse(event.getLocation());
+    this.eventCategory = event.getEventCategory();
   }
 }

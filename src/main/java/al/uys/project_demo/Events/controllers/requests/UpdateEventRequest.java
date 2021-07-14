@@ -38,8 +38,8 @@ public class UpdateEventRequest {
   //  @NotBlank(message = "EEEEEE")
   private final AddLocationRequest location;
 
-  @NotEmpty(message = "Etkinlik categorisinden en az 1 tane seçmelisiniz..")
-  private final EventCategory eventCategoryList;
+//  @NotEmpty(message = "Etkinlik categorisinden en az 1 tane seçmelisiniz..")
+  private final EventCategory eventCategory;
 
   public Event toEvent() {
     return new Event(
@@ -49,6 +49,6 @@ public class UpdateEventRequest {
         LocalDate.parse(endDate),
         quota,
         location.toLocation(),
-        eventCategoryList);
+        eventCategory);
   }
 }

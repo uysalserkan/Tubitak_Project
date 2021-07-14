@@ -44,6 +44,13 @@ public class UserService {
 
     Event event = eventRepository.getById(eventId);
 
+    if (!event.getEventStatus()) {
+      return new MessageResponse(
+          "%s Eventi şu anda başvuru yapılabilir değildir (status=false), lütfen daha sonra tekrar deneyiniz.."
+              .formatted(event.getEventName()),
+          MessageResponseType.ERROR);
+    }
+
     if (!userRepository.existsByTcNo(addUserRequest.getTcNo())) {
       return new MessageResponse(
           "%s ile kayıt etmeye çalıştığınız kullanıcı bulunmamaktadır."
@@ -64,7 +71,18 @@ public class UserService {
         new AddQRCodeRequest(event.getId(), event.getEventName(), user.getId(), user.getTcNo());
 
     user.addQRCode(registerUserToEvent.toQRCode());
+
+    if (event.isQuotaFull()) {
+      return new MessageResponse(
+          "%s Eventinin kontenjanı dolmuştur, event'den bir kullanıcının çıkması durumunda tekrar başvuru yapabilirsiniz.."
+              .formatted(event.getEventName()),
+          MessageResponseType.ERROR);
+    } else {
+      event.addAttandee();
+    }
+
     userRepository.save(user);
+    eventRepository.save(event);
 
     return new MessageResponse(
         "%s TC numarasına sahip olan kullanıcı %s Event'ine kayıt edildi."
