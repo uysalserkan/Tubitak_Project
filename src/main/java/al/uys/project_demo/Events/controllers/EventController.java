@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/*
+ * Tüm bağlantılar `http://localhost:8080/events` üzerinden gerçekleşiyor.
+ * 1. GET `/` ile tüm Eventlerin bilgilerini EventResponse modeli ile alırız.
+ * 2. GET `/id` ile id numarası girilmiş Event hakkında EventResponse modeli üzerinden bilgilerini alırız.
+ * 3. POST `/` ile JSON formatında EventRequest modeli üzerinden veri tabanımıza göndeirlen event'i kayıt ederiz.
+ * 4. PUT `/id` ile id numarası girilmiş olan Eventi JSON olarak gelen EventRequest ile güncelleyip veri tabanına kayıt ederiz.
+ * 5. DELETE `/id` ile id numarası verilmiş olan Event'i veri tabanından sileriz.
+ */
+
 @RestController
 @RequestMapping(value = "events")
 public class EventController {
