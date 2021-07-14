@@ -12,6 +12,7 @@
 - [x] Daha iyi bir görünüm için **Message Response** oluşturuldu.
 - [x] Kullanıcının bir event'e kayıdı için API bağlantısı sağlandı.
 - [x] User Registiration API tanımlandı.
+- [x] Kategori olarak POST ile belirtebiliyoruz, eğer girilmezse default olarak OTHERS kategorisine aktarılır.
 
 ### Devam Eden Aşamalar
 

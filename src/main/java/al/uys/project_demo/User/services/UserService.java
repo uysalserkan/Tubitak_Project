@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -51,6 +52,12 @@ public class UserService {
           MessageResponseType.ERROR);
     }
 
+    if (event.getEventStartDate().isBefore(LocalDate.now())) {
+      return new MessageResponse(
+          "%s Eventinin tarihi geçtiği için başvuru yapamazsınız..".formatted(event.getEventName()),
+          MessageResponseType.ERROR);
+    }
+
     if (!userRepository.existsByTcNo(addUserRequest.getTcNo())) {
       return new MessageResponse(
           "%s ile kayıt etmeye çalıştığınız kullanıcı bulunmamaktadır."
@@ -60,10 +67,10 @@ public class UserService {
 
     User user = userRepository.findByTcNo(addUserRequest.getTcNo());
 
-    if (qrCodeRepository.existsByUserTcNo(user.getTcNo())) {
+    if (qrCodeRepository.existsByUserTcNoAndEventId(user.getTcNo(), eventId)) {
       return new MessageResponse(
-          "%s ile kayıt etmeye çalıştığınız kullanıcı hali hazırda bu event'e kayıtlıdır.."
-              .formatted(addUserRequest.getTcNo()),
+          "%s ile kayıt etmeye çalıştığınız kullanıcı hali hazırda %s event'e kayıtlıdır.."
+              .formatted(addUserRequest.getTcNo(), event.getEventName()),
           MessageResponseType.ERROR);
     }
 
