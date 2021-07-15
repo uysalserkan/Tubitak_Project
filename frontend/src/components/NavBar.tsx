@@ -1,11 +1,17 @@
-import React from "react";
+import React, {useState} from "react";
 import {Nav, Button, Form} from "react-bootstrap";
 import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import EventCard from "./EventCard";
 import App from "../App";
 import BlankPage from "../pages/BlankPage";
+import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 
 function NavBar() {
+    const [isEventCreateOpen, setEventCreateOpen] = useState(false);
+    const [eventAPIResponse, setEventAPIResponse] = useState<EventQueryResponse[]>([]);
+
+    const eventAPI = new EventAPI();
+
     return (
         <Router>
             <div>
@@ -42,7 +48,13 @@ function NavBar() {
                                 <li className="nav-item">
                                     <a className="nav-link disabled" href="#" aria-disabled="true">Link</a>
                                 </li>
-                                <Button className="position-absolute start-50 btn-success">Add Event</Button>
+                                <Button className="position-absolute start-50 btn-success" onClick={() => {
+                                    alert("Butona basıldı.")
+                                    eventAPI.getEvent().then(data => setEventAPIResponse(data))
+                                    console.log(eventAPIResponse)
+                                }
+
+                                }> Add Event</Button>
                             </ul>
                             <Form className="d-flex">
                                 <input className="form-control me-2" type="search" placeholder="enter an event name"
