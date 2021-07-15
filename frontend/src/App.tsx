@@ -4,6 +4,7 @@ import './App.css';
 import EventCard from "./components/EventCard";
 
 function App() {
+
     return (
         <div className="App">
             <header className="App-header">
@@ -22,7 +23,8 @@ function App() {
                 </a>
             </header>
         </div>
-    );
+    )
+        ;
 }
 
 export default App;
