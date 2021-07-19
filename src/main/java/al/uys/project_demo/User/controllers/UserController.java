@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/*
+ * Tüm istekler `http://localhost:8080` üzerinden gerçekleşmektedir.
+ * 1. GET `/users` ile veri tabanında bulunan tüm kullanıcıları UserResponse modeli üzerinden Liste olarak döner.
+ * 2. GET `/user/tcno` ile T.C. numarası girilmiş olan bir kullanıcının bilgilerini UserResponse modeli üzerinden gösterilir.
+ * 3. POST `/user_register` üzerinden bir kullanıcının AddUserRequest modeli üzerinden bilgileri alınıp veri tabanına kayıt edilmesini sağlar.
+ * 4. POST `/id` ile Event id'si girilmiş bir Event'e JSON olarak gelen AddUserRequest modelinde bulunan kullanıcıyı kayıt eder.
+ */
+
 @RestController
 public class UserController {
   private final UserService userService;
@@ -18,22 +26,23 @@ public class UserController {
   }
 
   @PostMapping("/user_register")
-  public MessageResponse registerUser(@RequestBody @Valid AddUserRequest user){
+  public MessageResponse registerUser(@RequestBody @Valid AddUserRequest user) {
     return userService.addUser(user);
   }
 
   @GetMapping("/user/{tcno}")
-  public UserResponse getUser(@PathVariable("tcno") String tcNo){
+  public UserResponse getUser(@PathVariable("tcno") String tcNo) {
     return userService.getUserWithTCNo(tcNo);
   }
 
   @PostMapping("/{id}")
-  public MessageResponse registerAnEvent(@PathVariable("id") Long eventId, @RequestBody @Valid AddUserRequest addUserRequest){
+  public MessageResponse registerAnEvent(
+      @PathVariable("id") Long eventId, @RequestBody @Valid AddUserRequest addUserRequest) {
     return userService.registerUserToEvent(eventId, addUserRequest);
   }
 
   @GetMapping("/users")
-  public List<UserResponse> getAllUsers(){
+  public List<UserResponse> getAllUsers() {
     return userService.getAllUsers();
   }
 }

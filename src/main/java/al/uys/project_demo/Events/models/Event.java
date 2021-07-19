@@ -41,7 +41,7 @@ public class Event {
   private Integer quotas = 25;
 
   @Enumerated(EnumType.STRING)
-  private EventCategory eventCategoryList;
+  private EventCategory eventCategory;
 
   @Embedded private Location location;
 
@@ -59,14 +59,14 @@ public class Event {
       LocalDate eventEndDate,
       Integer quotas,
       Location location,
-      EventCategory eventCategoryList) {
+      EventCategory eventCategory) {
     this.eventName = eventName;
     this.eventStatus = eventStatus;
     this.eventStartDate = eventStartDate;
     this.eventEndDate = eventEndDate;
     this.quotas = quotas;
     this.location = location;
-    this.eventCategoryList = eventCategoryList;
+    this.eventCategory = eventCategory;
 
     // TODO: Buraya eklenecek olan soruların ataması gelecek.
 
@@ -81,7 +81,7 @@ public class Event {
     this.eventEndDate = newEvent.eventEndDate;
     this.quotas = newEvent.quotas;
     this.location = newEvent.location;
-    this.eventCategoryList = newEvent.eventCategoryList;
+    this.eventCategory = newEvent.eventCategory;
 
     // TODO: Buraya eklenecek olan soruların updatesi gelecek.
 
@@ -93,6 +93,10 @@ public class Event {
 
   public void removeQuestion(Question question) {
     this.questions.remove(question);
+  }
+
+  public boolean isQuotaFull() {
+    return this.quotas == 0;
   }
 
   public void addAttandee() {
