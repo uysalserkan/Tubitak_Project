@@ -5,6 +5,7 @@ import EventCard from "./EventCard";
 import App from "../App";
 import BlankPage from "../pages/BlankPage";
 import {EventAPI, EventQueryResponse} from "../api/EventAPI";
+import AddEvent from "../pages/AddEvent";
 
 function NavBar() {
     const [isEventCreateOpen, setEventCreateOpen] = useState(false);
@@ -30,6 +31,9 @@ function NavBar() {
                                 </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/custom-page">Custom</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/add-event">Add Event</Link>
                                 </li>
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
@@ -68,6 +72,7 @@ function NavBar() {
                     <Route path="/custom-page" exact={true} component={EventCard}/>
                     <Route path="/" exact={true} component={App}/>
                     <Route path="/bos" exact={true} component={BlankPage}/>
+                    <Route path="/add-event" exact={true} component={AddEvent}/>
                 </div>
             </div>
         </Router>
