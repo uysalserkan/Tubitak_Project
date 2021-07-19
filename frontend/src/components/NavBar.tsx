@@ -8,7 +8,7 @@ import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import AddEvent from "../pages/AddEvent";
 
 function NavBar() {
-    const [isEventCreateOpen, setEventCreateOpen] = useState(false);
+    // const [isEventCreateOpen, setEventCreateOpen] = useState(false);
     const [eventAPIResponse, setEventAPIResponse] = useState<EventQueryResponse[]>([]);
 
     const eventAPI = new EventAPI();
@@ -36,21 +36,21 @@ function NavBar() {
                                     <Link className="nav-link" to="/add-event">Add Event</Link>
                                 </li>
                                 <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
-                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Link
-                                    </a>
+                                    {/*<a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"*/}
+                                    {/*   role="button" data-bs-toggle="dropdown" aria-expanded="false">*/}
+                                    {/*    Link*/}
+                                    {/*</a>*/}
                                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                         <li><Link className="dropdown-item" to="/bos">Bos Sayfaya git</Link></li>
-                                        <li><a className="dropdown-item" href="#">Another action</a></li>
+                                        {/*<li><a className="dropdown-item" href="#">Another action</a></li>*/}
                                         <li>
                                             <hr className="dropdown-divider"/>
                                         </li>
-                                        <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                        {/*<li><a className="dropdown-item" href="#">Something else here</a></li>*/}
                                     </ul>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link disabled" href="#" aria-disabled="true">Link</a>
+                                    {/*<a className="nav-link disabled" href="#" aria-disabled="true">Link</a>*/}
                                 </li>
                                 <Button className="position-absolute start-50 btn-success" onClick={() => {
                                     alert("Butona basıldı.")

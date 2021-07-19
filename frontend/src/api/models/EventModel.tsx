@@ -1,4 +1,3 @@
-import {LocationModel} from "./LocationModel";
 import {EventCategory} from "../enums/EventCategory";
 
 export interface EventModel {
@@ -7,7 +6,10 @@ export interface EventModel {
     endDate: String;
     eventStatus: boolean;
     quota: number;
-    location: String;
+    location: {
+        latitude: String;
+        longtitude: String;
+    };
     eventCategory: EventCategory;
 
     /*
