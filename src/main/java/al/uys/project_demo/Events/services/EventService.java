@@ -85,7 +85,7 @@ public class EventService {
                     new EntityNotFoundException(
                         "%d id'ye sahip bir event bulunamadı. Lütfen tekrar kontrol edip deneyiniz.."
                             .formatted(id)));
-    if (!event.getEventStartDate().isAfter(LocalDate.now())) {
+    if (!event.getEventEndDate().isAfter(LocalDate.now())) {
       return new MessageResponse(
           "%s adlı event'in tarihi geçtiği için silme işlemini yapamazsınız.."
               .formatted(event.getEventName()),

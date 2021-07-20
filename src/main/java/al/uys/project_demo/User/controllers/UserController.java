@@ -12,12 +12,13 @@ import java.util.List;
 /*
  * Tüm istekler `http://localhost:8080` üzerinden gerçekleşmektedir.
  * 1. GET `/users` ile veri tabanında bulunan tüm kullanıcıları UserResponse modeli üzerinden Liste olarak döner.
- * 2. GET `/user/tcno` ile T.C. numarası girilmiş olan bir kullanıcının bilgilerini UserResponse modeli üzerinden gösterilir.
- * 3. POST `/user_register` üzerinden bir kullanıcının AddUserRequest modeli üzerinden bilgileri alınıp veri tabanına kayıt edilmesini sağlar.
- * 4. POST `/id` ile Event id'si girilmiş bir Event'e JSON olarak gelen AddUserRequest modelinde bulunan kullanıcıyı kayıt eder.
+ * 2. GET `users/tcno` ile T.C. numarası girilmiş olan bir kullanıcının bilgilerini UserResponse modeli üzerinden gösterilir.
+ * 3. POST `/users` üzerinden bir kullanıcının AddUserRequest modeli üzerinden bilgileri alınıp veri tabanına kayıt edilmesini sağlar.
+ * 4. POST `users/id` ile Event id'si girilmiş bir Event'e JSON olarak gelen AddUserRequest modelinde bulunan kullanıcıyı kayıt eder.
  */
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
   private final UserService userService;
 
@@ -25,12 +26,12 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/user_register")
+  @PostMapping("")
   public MessageResponse registerUser(@RequestBody @Valid AddUserRequest user) {
     return userService.addUser(user);
   }
 
-  @GetMapping("/user/{tcno}")
+  @GetMapping("/{tcno}")
   public UserResponse getUser(@PathVariable("tcno") String tcNo) {
     return userService.getUserWithTCNo(tcNo);
   }
@@ -41,7 +42,7 @@ public class UserController {
     return userService.registerUserToEvent(eventId, addUserRequest);
   }
 
-  @GetMapping("/users")
+  @GetMapping()
   public List<UserResponse> getAllUsers() {
     return userService.getAllUsers();
   }

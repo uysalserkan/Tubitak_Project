@@ -1,7 +1,9 @@
 import React from "react";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {EventAPI} from "../api/EventAPI";
 
 function EventCard(props) {
+    const eventAPI = new EventAPI();
 
 
     return (
@@ -17,7 +19,11 @@ function EventCard(props) {
                             <strong> {props.eventCategory}</strong>
                         </Col>
                         <Col className="col-lg-3 ">
-                            <Button className="btn-sm " variant="outline-danger">Delete</Button>
+                            <Button className="btn-sm " variant="outline-danger"
+                                    onClick={() => {
+                                        const out = eventAPI.deleteEventById(props.id);
+                                        console.log(out);
+                                    }}>Delete</Button>
                         </Col>
                     </Row>
                 </Card.Header>

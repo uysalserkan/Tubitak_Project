@@ -31,6 +31,8 @@ function HomePage(props) {
                         eventCategory={each.eventCategory}
                         eventStatus={each.eventStatus}
                         quota={each.quota}
+                        id={each.id}
+                        location={each.location}
                     />
                 </div>
             )}

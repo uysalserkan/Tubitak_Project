@@ -36,7 +36,7 @@ export class EventAPI {
         return response.data;
     }
 
-    async deleteEventById(id: number): Promise<EventQueryResponse> {
+    async deleteEventById(id: number): Promise<MessageResponse> {
         const response = await axios.delete(`http://localhost:8080/events/${id}`)
         return response.data;
     }
