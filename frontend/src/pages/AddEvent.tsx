@@ -74,8 +74,8 @@ function AddEvent(props: Props) {
 
 
     return (
-        <div className="w-50 m-lg-5">
-            <Form>
+        <div className="w-50 m-lg-5 bg-light ">
+            <Form style={{padding:"20px"}}>
                 <Row className="mb-3">
                     <Form.Group as={Col} md="8" controlId="eventName">
                         <Form.Label>Event Name</Form.Label>

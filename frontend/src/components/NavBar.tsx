@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import {Nav, Button, Form} from "react-bootstrap";
 import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import EventCard from "./EventCard";
-import App from "../App";
 import BlankPage from "../pages/BlankPage";
 import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import AddEvent from "../pages/AddEvent";
+import HomePage from "../pages/HomePage";
 
 function NavBar() {
     // const [isEventCreateOpen, setEventCreateOpen] = useState(false);
@@ -70,7 +70,7 @@ function NavBar() {
                 </Nav>
                 <div className="main-links">
                     <Route path="/custom-page" exact={true} component={EventCard}/>
-                    <Route path="/" exact={true} component={App}/>
+                    <Route path="/" exact={true} component={HomePage}/>
                     <Route path="/bos" exact={true} component={BlankPage}/>
                     <Route path="/add-event" exact={true} component={AddEvent}/>
                 </div>
