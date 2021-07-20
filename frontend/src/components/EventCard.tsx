@@ -16,16 +16,15 @@ function EventCard(props) {
                         <Col>
                             <strong> {props.eventCategory}</strong>
                         </Col>
+                        <Col className="col-lg-3 ">
+                            <Button className="btn-sm " variant="outline-danger">Delete</Button>
+                        </Col>
                     </Row>
                 </Card.Header>
-                {/*<Card.Img variant="top" src="https://avatars.githubusercontent.com/u/24881389?s=60&v=4"/>*/}
+
                 <Card.Body>
+
                     <Card.Title style={{fontSize: "28px"}}>{props.eventName}</Card.Title>
-                    {/*<Card.Subtitle style={{color: "gray"}}> Event Start Date - Event End Date</Card.Subtitle>*/}
-                    {/*<Card.Text style={{color: "red"}}>*/}
-                    {/*    Some quick example text to build on the card title and make up the bulk of*/}
-                    {/*    the card's content.*/}
-                    {/*</Card.Text>*/}
                     <Container>
                         <Row className="bottom-0 mt-5">
                             <Col>
@@ -54,7 +53,15 @@ function EventCard(props) {
                     </Container>
                 </Card.Body>
                 <Card.Footer>
-                    <Button className="align-self-center" variant="primary" size="lg" block>Event Details</Button>
+                    <Row>
+                        <Col>
+                            <button type="button" className="btn btn-outline-primary btn-lg btn-block">Details</button>
+                        </Col>
+
+                        <Col className="col-lg-4">
+                            <button type="button" className="btn btn-outline-success btn-lg btn-block">Register</button>
+                        </Col>
+                    </Row>
                 </Card.Footer>
             </Card>
         </div>
