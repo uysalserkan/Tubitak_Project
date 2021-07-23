@@ -20,7 +20,7 @@ function HomePage(props) {
         >
 
             {eventModelResponse.map(each =>
-                <div
+                <div key={each.id}
                     className="align-content-center"
                     style={{marginRight: "16px", marginBottom: "16px"}}
                 >

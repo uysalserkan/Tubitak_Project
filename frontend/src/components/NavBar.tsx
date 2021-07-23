@@ -1,21 +1,16 @@
-import React, {useRef, useState} from "react";
-import {Nav, Button, Form, Toast, ToastHeader, ToastBody, Alert, Row, Col} from "react-bootstrap";
+import React, {useState} from "react";
+import {Nav, Button, Form} from "react-bootstrap";
 import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import EventCard from "./EventCard";
 import BlankPage from "../pages/BlankPage";
-import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import AddEvent from "../pages/AddEvent";
 import HomePage from "../pages/HomePage";
 
-import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AddEventModal from "./Modals/AddEventModal";
 
 function NavBar() {
-    // const [isEventCreateOpen, setEventCreateOpen] = useState(false);
-    const [eventAPIResponse, setEventAPIResponse] = useState<EventQueryResponse[]>([]);
-
-
-    const eventAPI = new EventAPI();
+    const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
 
     return (
         <Router>
@@ -57,50 +52,16 @@ function NavBar() {
                                     {/*<a className="nav-link disabled" href="#" aria-disabled="true">Link</a>*/}
                                 </li>
                                 <Button className="position-absolute start-50 btn-success" onClick={() => {
-                                    toast.dark('🦄 Wow so easy!', {
-                                        position: "top-right",
-                                        autoClose: 5000,
-                                        hideProgressBar: false,
-                                        closeOnClick: false,
-                                        pauseOnHover: false,
-                                        draggable: true,
-                                        progress: undefined,
-                                    });
+                                    // <ToastFunct type="INFO" message="Bu bir info mesajıdır."/>
+                                    setAddEventModalOpen(true);
                                 }
 
                                 }> Add Event</Button>
-                                <ToastContainer
-                                    position="top-right"
-                                    autoClose={5000}
-                                    hideProgressBar={false}
-                                    newestOnTop
-                                    closeOnClick={false}
-                                    rtl={false}
-                                    pauseOnFocusLoss={false}
-                                    draggable
-                                    pauseOnHover={false}
+                                <AddEventModal
+                                    isOpen={isAddEventModalOpen}
+                                    handleClose={() => setAddEventModalOpen(false)}
                                 />
 
-                                {/*https://react-bootstrap.github.io/components/toasts/*/}
-                                {/*<Row>*/}
-                                {/*    <Col xs={6}>*/}
-                                {/*       <ToastContainer position={`top-end`}>*/}
-
-                                {/*           <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>*/}
-                                {/*               <Toast.Header>*/}
-                                {/*                   <img*/}
-                                {/*                       src="holder.js/20x20?text=%20"*/}
-                                {/*                       className="rounded me-2"*/}
-                                {/*                       alt=""*/}
-                                {/*                   />*/}
-                                {/*                   <strong className="me-auto">Bootstrap</strong>*/}
-                                {/*                   <small>11 mins ago</small>*/}
-                                {/*               </Toast.Header>*/}
-                                {/*               <Toast.Body>Woohoo, you're reading this text in a Toast!</Toast.Body>*/}
-                                {/*           </Toast>*/}
-                                {/*       </ToastContainer>*/}
-                                {/*    </Col>*/}
-                                {/*</Row>*/}
                             </ul>
                             <Form className="d-flex">
                                 <input className="form-control me-2" type="search"

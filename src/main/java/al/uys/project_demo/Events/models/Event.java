@@ -22,7 +22,6 @@ public class Event {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, length = 255)
   private String eventName;
 
   @Builder.Default private Boolean eventStatus = true;
@@ -30,15 +29,11 @@ public class Event {
   @CreationTimestamp private LocalDate creationDate;
   @UpdateTimestamp private LocalDate updatedDate;
 
-  @Column(nullable = false)
   private LocalDate eventStartDate;
 
-  @Column(nullable = false)
   private LocalDate eventEndDate;
 
-  @Column(nullable = false)
-  @Builder.Default
-  private Integer quotas = 25;
+  @Builder.Default private Integer quotas = 25;
 
   @Enumerated(EnumType.STRING)
   private EventCategory eventCategory;

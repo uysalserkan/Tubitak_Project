@@ -1,5 +1,5 @@
 export interface MessageResponse {
-    messageType: MessageType;
+    messageResponseType: MessageType;
     message: string
 }
 

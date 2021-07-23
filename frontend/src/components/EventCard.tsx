@@ -1,14 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import {EventAPI} from "../api/EventAPI";
+import {toast, ToastContainer} from "react-toastify";
+import EventDetailModal from "./Modals/EventDetailModal";
+import DeleteEventModal from "./Modals/DeleteEventModal";
 
 function EventCard(props) {
     const eventAPI = new EventAPI();
-
+    const [isRegisterModalOpen, setRegisterModal] = useState(false);
+    const [isDetailModalOpen, setDetailModal] = useState(false);
+    const [isDeleteEventModalOpen, setDeleteEventModal] = useState(false);
 
     return (
         <div>
+
+
             <Card className="bg-light" style={{width: '25rem', height: "25rem", padding: '4px'}}>
+
                 {/*25o<3SZ*/}
                 <Card.Header as="h5">
                     <Row>
@@ -21,9 +29,13 @@ function EventCard(props) {
                         <Col className="col-lg-3 ">
                             <Button className="btn-sm " variant="outline-danger"
                                     onClick={() => {
-                                        const out = eventAPI.deleteEventById(props.id);
-                                        console.log(out);
+                                        setDeleteEventModal(true);
                                     }}>Delete</Button>
+                            <DeleteEventModal
+                                isOpen={isDeleteEventModalOpen}
+                                handleClose={() => setDeleteEventModal(false)}
+                                eventId={props.id}
+                            />
                         </Col>
                     </Row>
                 </Card.Header>
@@ -61,17 +73,47 @@ function EventCard(props) {
                 <Card.Footer>
                     <Row>
                         <Col>
-                            <button type="button" className="btn btn-outline-primary btn-lg btn-block">Details</button>
+                            <Button variant="outline-primary" className="btn-lg" onClick={() => {
+
+                                setDetailModal(true);
+
+                            }
+                            }>Details</Button>
+                            <EventDetailModal
+                                isOpen={isDetailModalOpen}
+                                handleClose={() => setDetailModal(false)}
+                                event={props}
+                                addEventFunction={null}
+                            />
                         </Col>
 
                         <Col className="col-lg-4">
-                            <button type="button" className="btn btn-outline-success btn-lg btn-block">Register</button>
+                            <Button variant="outline-success" className="btn-lg btn-block"
+                                    onClick={
+                                        () => setRegisterModal(true)
+                                    }
+                            >Register </Button>
+
+
                         </Col>
                     </Row>
                 </Card.Footer>
             </Card>
+            < ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable
+                pauseOnHover={false}
+            />
         </div>
-    );
+
+    )
+        ;
 }
 
 export default EventCard;

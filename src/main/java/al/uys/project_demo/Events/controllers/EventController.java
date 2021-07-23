@@ -6,6 +6,7 @@ import al.uys.project_demo.Events.controllers.requests.UpdateEventRequest;
 import al.uys.project_demo.Events.controllers.responses.EventResponse;
 import al.uys.project_demo.Events.models.Event;
 import al.uys.project_demo.Events.services.EventService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping(value = "events")
+@Validated
 public class EventController {
 
   private final EventService eventService;
@@ -43,7 +45,7 @@ public class EventController {
 
   @PostMapping
   public MessageResponse postEvent(@Valid @RequestBody AddEventRequest event) {
-    return eventService.addEvent(event);
+    return eventService.addEvent(event.toEvent());
   }
 
   @PutMapping("/{id}")
