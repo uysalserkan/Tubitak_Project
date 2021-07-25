@@ -24,7 +24,7 @@ export class UserAPI {
         return response.data;
     }
 
-    async findByTCNo(tcNo: number): Promise<UserQueryResponse> {
+    async findByTCNo(tcNo: String): Promise<UserQueryResponse> {
         const response = await axios.get(`http://localhost:8080/users/${tcNo}`);
         return response.data;
     }

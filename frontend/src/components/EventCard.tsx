@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
-import {EventAPI} from "../api/EventAPI";
 import {toast, ToastContainer} from "react-toastify";
 import EventDetailModal from "./Modals/EventDetailModal";
 import DeleteEventModal from "./Modals/DeleteEventModal";
+import EventRegisterModal from "./Modals/EventRegisterModal";
+import moment from "moment";
 
 function EventCard(props) {
-    const eventAPI = new EventAPI();
     const [isRegisterModalOpen, setRegisterModal] = useState(false);
     const [isDetailModalOpen, setDetailModal] = useState(false);
     const [isDeleteEventModalOpen, setDeleteEventModal] = useState(false);
@@ -83,17 +83,38 @@ function EventCard(props) {
                                 isOpen={isDetailModalOpen}
                                 handleClose={() => setDetailModal(false)}
                                 event={props}
-                                addEventFunction={null}
                             />
                         </Col>
 
                         <Col className="col-lg-4">
                             <Button variant="outline-success" className="btn-lg btn-block"
                                     onClick={
-                                        () => setRegisterModal(true)
+                                        () => {
+                                            const inDate = (moment(new Date()).format("YYYY-MM-DD"))
+
+                                            if (props.endDate < inDate) {
+                                                toast.info(`You cannot register this event, because this event is passed..`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
+                                            } else {
+                                                setRegisterModal(true)
+                                            }
+                                        }
                                     }
                             >Register </Button>
-
+                            <EventRegisterModal
+                                isOpen={isRegisterModalOpen}
+                                handleClose={() => setRegisterModal(false)}
+                                eventId={props.id}
+                                eventName={props.eventName}
+                            />
 
                         </Col>
                     </Row>

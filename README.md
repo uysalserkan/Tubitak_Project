@@ -29,3 +29,6 @@
 
 - [x] Header ve Footer componentleri eklendi.
 - [x] Basit bir Event Card componenti eklendi.
+- [x] Event Details Modal'ı eklendi.
+- [x] Event Add Modal'ı eklendi.
+- [x] Event Delete Modal'ı eklendi.
