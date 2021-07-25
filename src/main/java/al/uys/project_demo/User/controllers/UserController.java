@@ -6,6 +6,7 @@ import al.uys.project_demo.User.controllers.response.UserResponse;
 import al.uys.project_demo.User.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class UserController {
   }
 
   @PostMapping("")
+  @Transactional
   public MessageResponse registerUser(@RequestBody @Valid AddUserRequest user) {
     return userService.addUser(user);
   }
@@ -38,6 +40,7 @@ public class UserController {
   }
 
   @PostMapping("/{id}")
+  @Transactional
   public MessageResponse registerAnEvent(
       @PathVariable("id") Long eventId, @RequestBody @Valid AddUserRequest addUserRequest) {
     return userService.registerUserToEvent(eventId, addUserRequest);

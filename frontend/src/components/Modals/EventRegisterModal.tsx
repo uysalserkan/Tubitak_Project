@@ -3,6 +3,7 @@ import React, {ChangeEvent, useState} from "react";
 import {UserAPI} from "../../api/UserAPI";
 import {UserModel} from "../../api/models/UserModel";
 import {toast} from "react-toastify";
+import {MessageType} from "../../dto/MessageResponse";
 
 const initialUserState: UserModel = {
     tcNo: "",
@@ -31,10 +32,10 @@ function EventRegisterModal(props) {
             case "tcno":
                 prevUserModel.tcNo = value;
                 break;
-            case "firstName":
+            case "firstname":
                 prevUserModel.firstName = value;
                 break;
-            case "lastName":
+            case "lastname":
                 prevUserModel.lastName = value;
                 break;
         }
@@ -81,26 +82,10 @@ function EventRegisterModal(props) {
                         </Col>
                         <Col>
 
-                            <Button
-                                onClick={() => {
-                                    if (userModel.tcNo.length < 11) {
-                                        toast.warn(`Please enter a valid T.C. number..`, {
-                                                position: "top-right",
-                                                autoClose: 5000,
-                                                hideProgressBar: false,
-                                                closeOnClick: true,
-                                                pauseOnHover: false,
-                                                draggable: true,
-                                                progress: undefined,
-                                            }
-                                        );
-                                    } else {
-                                        const output = getUser(userModel.tcNo).then((data) => {
-                                            setUserModel(data);
-                                            setIsChecked(true);
-                                            setIsRegistered(true);
-
-                                            toast.info(`The user is loaded from database..`, {
+                            <Button variant="secondary"
+                                    onClick={() => {
+                                        if (userModel.tcNo.length < 11) {
+                                            toast.warn(`Please enter a valid T.C. number..`, {
                                                     position: "top-right",
                                                     autoClose: 5000,
                                                     hideProgressBar: false,
@@ -110,25 +95,41 @@ function EventRegisterModal(props) {
                                                     progress: undefined,
                                                 }
                                             );
+                                        } else {
+                                            const output = getUser(userModel.tcNo).then((data) => {
+                                                setUserModel(data);
+                                                setIsChecked(true);
+                                                setIsRegistered(true);
 
-                                        }).catch(() => {
-                                            setIsChecked(true);
-                                            setIsRegistered(false);
+                                                toast.info(`The user is loaded from database..`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
 
-                                            toast.info(`The user is not found in database, you could input your name..`, {
-                                                    position: "top-right",
-                                                    autoClose: 5000,
-                                                    hideProgressBar: false,
-                                                    closeOnClick: true,
-                                                    pauseOnHover: false,
-                                                    draggable: true,
-                                                    progress: undefined,
-                                                }
-                                            );
-                                        });
-                                    }
-                                }}
-                                disabled={isChecked}
+                                            }).catch(() => {
+                                                setIsChecked(true);
+                                                setIsRegistered(false);
+
+                                                toast.info(`The user is not found in database, you could input your name..`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
+                                            });
+                                        }
+                                    }}
+                                    disabled={isChecked}
                             >Check</Button>
                         </Col>
                     </Row>
@@ -166,7 +167,7 @@ function EventRegisterModal(props) {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => {
+                <Button variant="danger" onClick={() => {
                     setIsChecked(false);
                     setIsRegistered(false);
                     setUserModel(initialUserState);
@@ -175,8 +176,113 @@ function EventRegisterModal(props) {
                     Cancel
                 </Button>
                 <Button variant="primary" onClick={() => {
-                    props.handleClose();
+                    if (userModel.firstName.length < 2) {
+                        toast.warn(`Please enter a firstname that has min. 2 characters..`, {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: false,
+                                draggable: true,
+                                progress: undefined,
+                            }
+                        )
+                    } else if (userModel.lastName.length < 2) {
+                        toast.warn(`Please enter a lastname that has min. 2 characters..`, {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: false,
+                                draggable: true,
+                                progress: undefined,
+                            }
+                        )
+                    } else {
+                        if (!isRegistered) {
+                            userAPI.postUser(userModel).then((response) => {
+                                    if (response.messageResponseType === MessageType.SUCCESS) {
+                                        toast.success(`✔ ${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
 
+                                        // props.handleClose();
+                                        // setTimeout((x) => {
+                                        //     window.location.reload();
+                                        // }, 5000);
+                                    }
+                                }
+                            ).catch((err) => {
+                                console.error("ERRORR\n\n" + err);
+                                toast.error(`⚠ ${err}`, {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: false,
+                                        draggable: true,
+                                        progress: undefined,
+                                    }
+                                );
+                            })
+                        }
+
+                        setTimeout(() => {
+                            userAPI.registerUserToEvent(props.eventId, userModel).then((response) => {
+                                    if (response.messageResponseType === MessageType.SUCCESS) {
+                                        toast.success(`✔ ${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                    } else if (response.messageResponseType === MessageType.ERROR) {
+                                        toast.error(`${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                    }
+
+                                }
+                            ).catch((err) => {
+                                console.error("ERRORR\n\n" + err);
+                                toast.error(`⚠ ${err}`, {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: false,
+                                        draggable: true,
+                                        progress: undefined,
+                                    }
+                                );
+                            })
+                        }, 100);
+
+
+                        setIsChecked(false);
+                        setIsRegistered(false);
+                        setUserModel(initialUserState);
+                        props.handleClose();
+                        // TODO: Burada dış bağlantıda gelecek olan QRCodeModal'ını açacak olan fonksiyon gelecek ve içerisine eventId ve UserModel'i alacak
+                    }
                     /*
                     * Eğer kullanıcı sistemde kayıtlı değilse min. 2 karakterli adı ve soyadı ile kayıt edilecek.
                     * Sonra Event'e kayıt olacak.

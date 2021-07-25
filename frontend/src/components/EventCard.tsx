@@ -88,6 +88,7 @@ function EventCard(props) {
 
                         <Col className="col-lg-4">
                             <Button variant="outline-success" className="btn-lg btn-block"
+                                    disabled={props.quota <= 0}
                                     onClick={
                                         () => {
                                             const inDate = (moment(new Date()).format("YYYY-MM-DD"))
