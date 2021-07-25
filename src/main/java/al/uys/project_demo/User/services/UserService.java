@@ -52,7 +52,7 @@ public class UserService {
           MessageResponseType.ERROR);
     }
 
-    if (event.getEventStartDate().isBefore(LocalDate.now())) {
+    if (event.getEventEndDate().isBefore(LocalDate.now())) {
       return new MessageResponse(
           "%s Eventinin tarihi geçtiği için başvuru yapamazsınız..".formatted(event.getEventName()),
           MessageResponseType.ERROR);
