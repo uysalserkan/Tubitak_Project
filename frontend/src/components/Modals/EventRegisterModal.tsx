@@ -280,7 +280,11 @@ function EventRegisterModal(props) {
                         setIsChecked(false);
                         setIsRegistered(false);
                         setUserModel(initialUserState);
+                        props.setUser(userModel);
+                        props.openQRCodeModel(true)
+
                         props.handleClose();
+
                         // TODO: Burada dış bağlantıda gelecek olan QRCodeModal'ını açacak olan fonksiyon gelecek ve içerisine eventId ve UserModel'i alacak
                     }
                     /*
@@ -294,9 +298,11 @@ function EventRegisterModal(props) {
                     Register
                 </Button>
             </Modal.Footer>
+
         </Modal>
 
-    );
+    )
+        ;
 }
 
 export default EventRegisterModal;

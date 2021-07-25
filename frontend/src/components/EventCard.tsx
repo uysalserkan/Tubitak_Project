@@ -5,11 +5,22 @@ import EventDetailModal from "./Modals/EventDetailModal";
 import DeleteEventModal from "./Modals/DeleteEventModal";
 import EventRegisterModal from "./Modals/EventRegisterModal";
 import moment from "moment";
+import QRCodeModal from "./Modals/QRCodeModals";
+import {UserModel} from "../api/models/UserModel";
+
+const initialUserState: UserModel = {
+    tcNo: "",
+    firstName: "",
+    lastName: ""
+}
 
 function EventCard(props) {
     const [isRegisterModalOpen, setRegisterModal] = useState(false);
     const [isDetailModalOpen, setDetailModal] = useState(false);
     const [isDeleteEventModalOpen, setDeleteEventModal] = useState(false);
+    const [isQRCodeModalOpen, setIsQRCodeModalOpen] = useState(false);
+
+    const [exportedUserModel, setExportedUserModel] = useState(initialUserState);
 
     return (
         <div>
@@ -115,8 +126,17 @@ function EventCard(props) {
                                 handleClose={() => setRegisterModal(false)}
                                 eventId={props.id}
                                 eventName={props.eventName}
-                            />
+                                setUser={setExportedUserModel}
+                                openQRCodeModel={setIsQRCodeModalOpen}
 
+                            />
+                            <QRCodeModal
+                                isOpen={isQRCodeModalOpen}
+                                handleClose={() => setIsQRCodeModalOpen(false)}
+                                user={exportedUserModel}
+                                eventId={props.id}
+                                eventName={props.eventName}
+                            />
                         </Col>
                     </Row>
                 </Card.Footer>
