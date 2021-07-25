@@ -1,4 +1,4 @@
-import {Button, Col, Container, Form, FormControl, FormGroup, FormText, Modal, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, FormControl, FormGroup, Modal, Row} from "react-bootstrap";
 import React, {ChangeEvent, useState} from "react";
 import {UserAPI} from "../../api/UserAPI";
 import {UserModel} from "../../api/models/UserModel";
@@ -96,7 +96,7 @@ function EventRegisterModal(props) {
                                                 }
                                             );
                                         } else {
-                                            const output = getUser(userModel.tcNo).then((data) => {
+                                            getUser(userModel.tcNo).then((data) => {
                                                 setUserModel(data);
                                                 setIsChecked(true);
                                                 setIsRegistered(true);
@@ -200,7 +200,7 @@ function EventRegisterModal(props) {
                         )
                     } else {
                         if (!isRegistered) {
-                            userAPI.postUser(userModel).then((response) => {
+                            registerUser(userModel).then((response) => {
                                     if (response.messageResponseType === MessageType.SUCCESS) {
                                         toast.success(`✔ ${response.message}`, {
                                                 position: "top-right",
@@ -235,7 +235,7 @@ function EventRegisterModal(props) {
                         }
 
                         setTimeout(() => {
-                            userAPI.registerUserToEvent(props.eventId, userModel).then((response) => {
+                            registerEventUser(props.eventId, userModel).then((response) => {
                                     if (response.messageResponseType === MessageType.SUCCESS) {
                                         toast.success(`✔ ${response.message}`, {
                                                 position: "top-right",

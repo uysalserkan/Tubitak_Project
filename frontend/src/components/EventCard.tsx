@@ -65,7 +65,7 @@ function EventCard(props) {
                                 <i>Remaining Quota:</i>
                             </Col>
                             <Col>
-                                <strong>{props.quota}</strong>
+                                <strong>{props.quota > 0 ? props.quota : "Sorry, full quota.."}</strong>
                             </Col>
                         </Row>
                     </Container>

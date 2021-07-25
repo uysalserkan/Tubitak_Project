@@ -19,7 +19,7 @@ function DeleteEventModal(props) {
                 <Button variant="danger" onClick={
                     () => {
                         eventAPI.deleteEventById(props.eventId).then((response) => {
-                                if (response.messageResponseType == MessageType.ERROR) {
+                                if (response.messageResponseType === MessageType.ERROR) {
                                     toast.error(`⚠ ${response.message}`, {
                                             position: "top-right",
                                             autoClose: 5000,
