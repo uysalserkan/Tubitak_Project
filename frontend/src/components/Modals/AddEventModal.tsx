@@ -169,6 +169,17 @@ function AddEventModal(props) {
                                     setTimeout((x) => {
                                         window.location.reload();
                                     }, 5000);
+                                } else if (response.messageResponseType === MessageType.ERROR) {
+                                    toast.error(`✔ ${response.message}`, {
+                                            position: "top-right",
+                                            autoClose: 5000,
+                                            hideProgressBar: false,
+                                            closeOnClick: true,
+                                            pauseOnHover: false,
+                                            draggable: true,
+                                            progress: undefined,
+                                        }
+                                    );
                                 }
                             }
                         ).catch((err) => {
