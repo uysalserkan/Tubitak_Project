@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import EventCard from "../components/EventCard";
+import moment from "moment";
 
 function HomePage(props) {
     const [eventModelResponse, setEventModelResponse] = useState<EventQueryResponse[]>([]);
@@ -19,23 +20,27 @@ function HomePage(props) {
             style={{marginLeft: "16px", marginTop: "16px", alignContent: "center"}}
         >
 
-            {eventModelResponse.map(each =>
-                <div key={each.id}
-                    className="align-content-center"
-                    style={{marginRight: "16px", marginBottom: "16px"}}
-                >
-                    <EventCard
-                        eventName={each.eventName}
-                        startDate={each.startDate}
-                        endDate={each.endDate}
-                        eventCategory={each.eventCategory}
-                        eventStatus={each.eventStatus}
-                        quota={each.quota}
-                        id={each.id}
-                        location={each.location}
-                    />
-                </div>
-            )}
+            {eventModelResponse
+                .filter(each => {
+                    const inDate = (moment(new Date()).format("YYYY-MM-DD"))
+                    return each.endDate > inDate;
+                }).map(each =>
+                    <div key={each.id}
+                         className="align-content-center"
+                         style={{marginRight: "16px", marginBottom: "16px"}}
+                    >
+                        <EventCard
+                            eventName={each.eventName}
+                            startDate={each.startDate}
+                            endDate={each.endDate}
+                            eventCategory={each.eventCategory}
+                            eventStatus={each.eventStatus}
+                            quota={each.quota}
+                            id={each.id}
+                            location={each.location}
+                        />
+                    </div>
+                )}
         </div>
 
     );
