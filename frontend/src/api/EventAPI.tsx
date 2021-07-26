@@ -31,8 +31,8 @@ export class EventAPI {
         return response.data;
     }
 
-    async updateEventById(id: number): Promise<EventQueryResponse> {
-        const response = await axios.put(`http://localhost:8080/events/${id}`)
+    async updateEventById(id: number, eventModel: EventModel): Promise<MessageResponse> {
+        const response = await axios.put(`http://localhost:8080/events/${id}`, eventModel)
         return response.data;
     }
 
