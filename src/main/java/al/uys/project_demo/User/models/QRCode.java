@@ -12,22 +12,21 @@ public class QRCode {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
   private Long eventId;
 
-  @Column(nullable = false)
   private String eventName;
 
-  @Column(nullable = false)
-  private Long userId;
+  private String firstName;
+  private String lastName;
 
-  @Column(nullable = false)
   private String userTcNo;
 
-  public QRCode(Long eventId, String eventName, Long userId, String userTcNo) {
+  public QRCode(
+      Long eventId, String eventName, String firstName, String lastName, String userTcNo) {
     this.eventId = eventId;
     this.eventName = eventName;
-    this.userId = userId;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.userTcNo = userTcNo;
   }
 

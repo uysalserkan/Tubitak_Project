@@ -3,6 +3,7 @@ import QRCode from "qrcode.react";
 import React, {useState} from "react";
 import {toast} from "react-toastify";
 
+
 function QRCodeModal(props) {
     const [isSavedQRCode, setIsSavedQRCode] = useState(false);
 
@@ -20,6 +21,7 @@ function QRCodeModal(props) {
         // document.write('<img src="' + img + '"/>');
     };
 
+
     return (
         <Modal show={props.isOpen} onHide={props.handleClose} animation={true} backdrop="static">
             <Modal.Header>
@@ -30,13 +32,7 @@ function QRCodeModal(props) {
                 <Container className="align-items-end">
                     <QRCode
                         id={`${props.user.tcNo}_qrCode`}
-                        value={`{
-firstName: ${props.user.firstName}
-lastName: ${props.user.lastName}
-tcNo: ${props.user.tcNo}
-eventName: ${props.eventName}
-eventId: ${props.eventId}
-}`}
+                        value={`${JSON.stringify(props.qrCodeModel)}`}
                         size={256}
                     />
                 </Container>

@@ -4,6 +4,8 @@ import {UserAPI} from "../../api/UserAPI";
 import {UserModel} from "../../api/models/UserModel";
 import {toast} from "react-toastify";
 import {MessageType} from "../../dto/MessageResponse";
+import {QRCodeAPI} from "../../api/QRCodeAPI";
+
 
 const initialUserState: UserModel = {
     tcNo: "",
@@ -12,6 +14,28 @@ const initialUserState: UserModel = {
 }
 
 function EventRegisterModal(props) {
+
+    const qrCodeAPI = new QRCodeAPI();
+
+
+    const getQRCode = () => {
+        qrCodeAPI.getQRCode(props.eventId, userModel.tcNo).then((response) => {
+            props.setQrCodeModel(response)
+        }).catch((err) => {
+            toast.error(`${err}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
+        })
+    }
+
+
     const [isChecked, setIsChecked] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
     const [userModel, setUserModel] = useState(initialUserState);
@@ -116,7 +140,7 @@ function EventRegisterModal(props) {
                                                 setIsChecked(true);
                                                 setIsRegistered(false);
 
-                                                toast.info(`The user is not found in database, you could input your name..`, {
+                                                toast.warning(`The user is not found in database, you could input your name..`, {
                                                         position: "top-right",
                                                         autoClose: 5000,
                                                         hideProgressBar: false,
@@ -247,6 +271,9 @@ function EventRegisterModal(props) {
                                                 progress: undefined,
                                             }
                                         );
+
+                                        getQRCode();
+
                                     } else if (response.messageResponseType === MessageType.ERROR) {
                                         toast.error(`${response.message}`, {
                                                 position: "top-right",
@@ -281,9 +308,13 @@ function EventRegisterModal(props) {
                         setIsRegistered(false);
                         setUserModel(initialUserState);
                         props.setUser(userModel);
-                        props.openQRCodeModel(true)
+                        setTimeout((x) => {
+                            getQRCode();
+                            props.openQRCodeModel(true)
 
-                        props.handleClose();
+                            props.handleClose();
+
+                        }, 100)
 
                         // TODO: Burada dış bağlantıda gelecek olan QRCodeModal'ını açacak olan fonksiyon gelecek ve içerisine eventId ve UserModel'i alacak
                     }

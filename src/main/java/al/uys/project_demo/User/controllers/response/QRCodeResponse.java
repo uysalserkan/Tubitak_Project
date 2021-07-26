@@ -8,13 +8,15 @@ public class QRCodeResponse {
 
   private final Long eventId;
   private final String eventName;
-  private final Long userId;
+  private final String firstName;
+  private final String lastName;
   private final String userTcNo;
 
   public QRCodeResponse(final QRCode qrCode) {
     this.eventId = qrCode.getEventId();
     this.eventName = qrCode.getEventName();
-    this.userId = qrCode.getUserId();
+    this.firstName = qrCode.getFirstName();
+    this.lastName = qrCode.getLastName();
     this.userTcNo = qrCode.getUserTcNo();
   }
 }

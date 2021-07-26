@@ -75,7 +75,12 @@ public class UserService {
     }
 
     AddQRCodeRequest registerUserToEvent =
-        new AddQRCodeRequest(event.getId(), event.getEventName(), user.getId(), user.getTcNo());
+        new AddQRCodeRequest(
+            event.getId(),
+            event.getEventName(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getTcNo());
 
     user.addQRCode(registerUserToEvent.toQRCode());
 

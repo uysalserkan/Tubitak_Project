@@ -8,6 +8,8 @@ import moment from "moment";
 import QRCodeModal from "./Modals/QRCodeModals";
 import {UserModel} from "../api/models/UserModel";
 import UpdateEventModal from "./Modals/UpdateEventModal";
+import {QRCodeModel} from "../api/models/QRCodeModel";
+import {QRCodeAPI} from "../api/QRCodeAPI";
 
 const initialUserState: UserModel = {
     tcNo: "",
@@ -15,7 +17,16 @@ const initialUserState: UserModel = {
     lastName: ""
 }
 
+const initialQRCode: QRCodeModel = {
+    eventId: 0,
+    eventName: "",
+    firstName: "",
+    lastName: "",
+    userTcNo: ""
+}
+
 function EventCard(props) {
+    const [qrCodeModel, setQrCodeModel] = useState(initialQRCode)
     const [isRegisterModalOpen, setRegisterModal] = useState(false);
     const [isDetailModalOpen, setDetailModal] = useState(false);
     const [isDeleteEventModalOpen, setDeleteEventModal] = useState(false);
@@ -32,6 +43,7 @@ function EventCard(props) {
             props.endDate > currentDate
         );
     }
+
 
     return (
         <div>
@@ -131,6 +143,7 @@ function EventCard(props) {
                                                 );
                                             } else {
                                                 setRegisterModal(true)
+
                                             }
                                         }
                                     }
@@ -142,6 +155,7 @@ function EventCard(props) {
                                 eventName={props.eventName}
                                 setUser={setExportedUserModel}
                                 openQRCodeModel={setIsQRCodeModalOpen}
+                                setQrCodeModel={setQrCodeModel}
 
                             />
                             <QRCodeModal
@@ -150,6 +164,7 @@ function EventCard(props) {
                                 user={exportedUserModel}
                                 eventId={props.id}
                                 eventName={props.eventName}
+                                qrCodeModel={qrCodeModel}
                             />
                             <UpdateEventModal
                                 isOpen={isUpdateEventModalOpen}
