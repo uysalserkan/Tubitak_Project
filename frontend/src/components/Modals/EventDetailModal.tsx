@@ -39,7 +39,13 @@ function EventDetailModal(props) {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" onClick={
+                <Button variant="primary"
+                        onClick={() => {
+                            props.setIsUpdateEventModalOpen(true);
+                            props.handleClose();
+                        }}
+                >Update</Button>
+                <Button variant="secondary" onClick={
                     () => props.handleClose()
                 }>
                     Close
