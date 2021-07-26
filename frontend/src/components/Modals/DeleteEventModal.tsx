@@ -3,9 +3,20 @@ import {EventAPI} from "../../api/EventAPI";
 import {toast, ToastContainer} from "react-toastify";
 import React from "react";
 import {MessageType} from "../../dto/MessageResponse";
+import moment from "moment";
 
 function DeleteEventModal(props) {
     const eventAPI = new EventAPI();
+
+    function isLive() {
+        const currentDate = (moment(new Date()).format("YYYY-MM-DD"));
+        return (
+            props.startDate < currentDate
+            &&
+            props.endDate > currentDate
+        );
+    }
+
     return (
 
         <Modal show={props.isOpen} onHide={props.handleClose} animation={true}>
@@ -18,49 +29,63 @@ function DeleteEventModal(props) {
             <Modal.Footer>
                 <Button variant="danger" onClick={
                     () => {
-                        eventAPI.deleteEventById(props.eventId).then((response) => {
-                                if (response.messageResponseType === MessageType.ERROR) {
-                                    toast.error(`⚠ ${response.message}`, {
-                                            position: "top-right",
-                                            autoClose: 5000,
-                                            hideProgressBar: false,
-                                            closeOnClick: true,
-                                            pauseOnHover: false,
-                                            draggable: true,
-                                            progress: undefined,
-                                        }
-                                    );
-                                    props.handleClose();
-                                } else if (response.messageResponseType === MessageType.SUCCESS) {
-                                    toast.success(`✔ ${response.message}`, {
-                                            position: "top-right",
-                                            autoClose: 5000,
-                                            hideProgressBar: false,
-                                            closeOnClick: true,
-                                            pauseOnHover: false,
-                                            draggable: true,
-                                            progress: undefined,
-                                        }
-                                    );
-                                    props.handleClose();
-                                    setTimeout((x) => {
-                                        window.location.reload();
-                                    }, 5000);
+                        if (isLive()) {
+                            toast.error(`📢 You cannot delete live events..    `, {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: false,
+                                    draggable: true,
+                                    progress: undefined,
                                 }
-                            }
-                        ).catch((err) => {
-                                toast.error(`⚠ ${err}`, {
-                                        position: "top-right",
-                                        autoClose: 5000,
-                                        hideProgressBar: false,
-                                        closeOnClick: true,
-                                        pauseOnHover: false,
-                                        draggable: true,
-                                        progress: undefined,
+                            );
+                            props.handleClose();
+                        } else {
+                            eventAPI.deleteEventById(props.eventId).then((response) => {
+                                    if (response.messageResponseType === MessageType.ERROR) {
+                                        toast.error(`📢 ${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                        props.handleClose();
+                                    } else if (response.messageResponseType === MessageType.SUCCESS) {
+                                        toast.success(`✔ ${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                        props.handleClose();
+                                        setTimeout((x) => {
+                                            window.location.reload();
+                                        }, 5000);
                                     }
-                                );
-                            }
-                        )
+                                }
+                            ).catch((err) => {
+                                    toast.error(`⚠ ${err}`, {
+                                            position: "top-right",
+                                            autoClose: 5000,
+                                            hideProgressBar: false,
+                                            closeOnClick: true,
+                                            pauseOnHover: false,
+                                            draggable: true,
+                                            progress: undefined,
+                                        }
+                                    );
+                                }
+                            )
+                        }
                     }
                 }>Delete</Button>
 

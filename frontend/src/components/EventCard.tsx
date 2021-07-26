@@ -24,6 +24,15 @@ function EventCard(props) {
 
     const [exportedUserModel, setExportedUserModel] = useState(initialUserState);
 
+    function isLive() {
+        const currentDate = (moment(new Date()).format("YYYY-MM-DD"));
+        return (
+            props.startDate < currentDate
+            &&
+            props.endDate > currentDate
+        );
+    }
+
     return (
         <div>
 
@@ -48,6 +57,8 @@ function EventCard(props) {
                                 isOpen={isDeleteEventModalOpen}
                                 handleClose={() => setDeleteEventModal(false)}
                                 eventId={props.id}
+                                startDate={props.startDate}
+                                endDate={props.endDate}
                             />
                         </Col>
                     </Row>
@@ -55,7 +66,7 @@ function EventCard(props) {
 
                 <Card.Body>
 
-                    <Card.Title style={{fontSize: "28px"}}>{props.eventName}</Card.Title>
+                    <Card.Title style={{fontSize: "28px"}}>{isLive() ? "🟢 " : ""}{props.eventName}</Card.Title>
                     <Container>
                         <Row className="bottom-0 mt-5">
                             <Col>
