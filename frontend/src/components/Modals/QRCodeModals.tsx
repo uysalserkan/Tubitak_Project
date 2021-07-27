@@ -1,11 +1,21 @@
-import {Button, Container, Modal} from "react-bootstrap";
+import {Button, Col, Container, FormControl, FormGroup, FormLabel, FormText, Modal, Row} from "react-bootstrap";
 import QRCode from "qrcode.react";
 import React, {useState} from "react";
 import {toast} from "react-toastify";
+import validator from 'validator'
+import {QRCodeAPI} from "../../api/QRCodeAPI";
+import {MessageType} from "../../dto/MessageResponse";
 
 
 function QRCodeModal(props) {
     const [isSavedQRCode, setIsSavedQRCode] = useState(false);
+    const [emailAddress, setEmailAddress] = useState("");
+
+    const qRCodeAPI = new QRCodeAPI();
+
+    function isVaidEmail() {
+        return validator.isEmail(emailAddress);
+    }
 
     const downloadQRCode = () => {
         // Generate download with use canvas and stream
@@ -29,12 +39,88 @@ function QRCodeModal(props) {
             </Modal.Header>
 
             <Modal.Body>
-                <Container className="align-items-end">
-                    <QRCode
-                        id={`${props.user.tcNo}_qrCode`}
-                        value={`${JSON.stringify(props.qrCodeModel)}`}
-                        size={256}
-                    />
+                <Container className="align-items-center">
+                    <Row className="mb-3">
+
+                        <QRCode
+                            id={`${props.user.tcNo}_qrCode`}
+                            value={`${JSON.stringify(props.qrCodeModel)}`}
+                            size={256}
+                        />
+                    </Row>
+                    <Row className="mb-3 align-items-center">
+                        <Col className="col-lg-8 ">
+                            <FormGroup controlId="email">
+                                <FormLabel><strong>E Mail Address</strong></FormLabel>
+                                <FormControl
+                                    type="email"
+                                    name="email"
+                                    onChange={(e) => {
+                                        setEmailAddress(e.target.value);
+                                    }}
+                                />
+                                <FormText>Please enter your current email address.</FormText>
+                            </FormGroup>
+                        </Col>
+                        <Col className="col-lg-4">
+                            <Button
+                                variant="outline-success"
+                                className="col-lg-8"
+                                type="submit"
+                                onClick={() => {
+                                    if (isVaidEmail()) {
+                                        qRCodeAPI.sendQRCode(props.eventId, props.user.tcNo, emailAddress).then((response) => {
+                                            if (response.messageResponseType == MessageType.SUCCESS) {
+                                                toast.success(`${response.message}`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
+                                            } else {
+                                                toast.warn(`${response.message}`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
+                                            }
+                                        }).catch((err) => {
+                                            toast.error(`${err}`, {
+                                                    position: "top-right",
+                                                    autoClose: 5000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: false,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                }
+                                            );
+                                        })
+                                    } else {
+                                        toast.error(`${emailAddress} is not valid an email address.`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                    }
+                                }}
+                            >Send</Button>
+                        </Col>
+                    </Row>
                 </Container>
             </Modal.Body>
 

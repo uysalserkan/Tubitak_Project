@@ -3,11 +3,9 @@ package al.uys.project_demo.User.controllers;
 import al.uys.project_demo.Commons.MessageResponse;
 import al.uys.project_demo.User.controllers.response.QRCodeResponse;
 import al.uys.project_demo.User.services.QRCodeService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @RestController
@@ -28,8 +26,9 @@ public class QRCodeController {
   }
 
   @PostMapping("mail")
-  public MessageResponse sendMail(@RequestParam Long eventId, @RequestParam String tcno, @RequestParam String email)
+  public MessageResponse sendMail(
+      @RequestParam Long eventId, @RequestParam String tcno, @RequestParam String email)
       throws MessagingException, IOException {
-    return qrCodeService.sendMail(eventId, tcno,email);
+    return qrCodeService.sendMail(eventId, tcno, email);
   }
 }

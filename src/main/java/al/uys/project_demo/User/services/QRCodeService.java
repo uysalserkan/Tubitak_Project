@@ -111,10 +111,13 @@ public class QRCodeService {
 
         helper.setText(
             "<h3>Hi %s</h3>".formatted(userResponse.getFirstName())
-                + "<p>You registered at <strong><i>%s</i></strong> event, this event will be start at <strong>%s</strong>.<br\\>"
-                    .formatted(eventResponse.getEventName(), eventResponse.getStartDate())
-                + "You can find your QRCode at the attachment section, <u>do not forget when you come the event.</u><br\\>"
-                + "<h6>See you at the event..<br\\>SZ25</h6>",
+                + "<p>You registered at <strong><i>%s</i></strong> event, this event will be between <strong>%s</strong> and <strong>%s</strong>.<br>"
+                    .formatted(
+                        eventResponse.getEventName(),
+                        eventResponse.getStartDate(),
+                        eventResponse.getEndDate())
+                + "You can find your QRCode at the attachment section, <u>do not forget when you come the event.</u><br>"
+                + "<h6>See you at the event..<br>SZ25</h6>",
             true);
 
         //        System.out.println(FileSystems.getDefault().getPath("~") + sourceName);
