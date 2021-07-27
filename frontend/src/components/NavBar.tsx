@@ -1,16 +1,22 @@
 import React, {useState} from "react";
-import {Nav, Button, Form} from "react-bootstrap";
+import {Nav, Button, Form, FormControl} from "react-bootstrap";
 import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import EventCard from "./EventCard";
-import BlankPage from "../pages/BlankPage";
+import RegisteredEventsPage from "../pages/RegisteredEventsPage";
 import AddEvent from "../pages/AddEvent";
 import HomePage from "../pages/HomePage";
 
 import 'react-toastify/dist/ReactToastify.css';
 import AddEventModal from "./Modals/AddEventModal";
+import {EventQueryResponse} from "../api/EventAPI";
+import {QRCodeAPI} from "../api/QRCodeAPI";
+import {toast} from "react-toastify";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
+    const [searchedTCNo, serSearchedTCNo] = useState("");
+    const [registeredEvents, setRegisteredEvents] = useState<EventQueryResponse[]>([]);
+    const qrCodeAPI = new QRCodeAPI();
 
     return (
         <Router>
@@ -40,7 +46,8 @@ function NavBar() {
                                     {/*    Link*/}
                                     {/*</a>*/}
                                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                        <li><Link className="dropdown-item" to="/bos">Bos Sayfaya git</Link></li>
+                                        <li><Link className="dropdown-item" to="/registeredEvents">Bos Sayfaya
+                                            git</Link></li>
                                         {/*<li><a className="dropdown-item" href="#">Another action</a></li>*/}
                                         <li>
                                             <hr className="dropdown-divider"/>
@@ -63,11 +70,50 @@ function NavBar() {
                                 />
 
                             </ul>
-                            <Form className="d-flex">
-                                <input className="form-control me-2" type="search"
-                                       placeholder="enter an event name"
-                                       aria-label="Search"/>
-                                <button className="btn btn-primary" type="submit">Search</button>
+                            <Form className="d-flex" onSubmit={(e) => {
+                                e.preventDefault();
+                                console.log(e.target)
+                            }}>
+                                <FormControl className=" me-2"
+                                             type="text"
+                                             placeholder="Your T.C. No"
+                                             maxLength={11}
+                                             onChange={(e) => {
+                                                 serSearchedTCNo(e.target.value);
+                                             }}
+                                />
+                                <Link className="btn btn-primary" to="/registeredEvents" onClick={() => {
+                                    qrCodeAPI.getAllEventRegistered(searchedTCNo).then(
+                                        (response) => {
+                                            if (response) {
+                                                setRegisteredEvents(response);
+                                            } else {
+                                                toast.warning(`Something goes wrong.`, {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    ).catch((err) => {
+                                        toast.error(`${err}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                    });
+
+                                }}>Search</Link>
                             </Form>
                         </div>
                     </div>
@@ -75,7 +121,9 @@ function NavBar() {
                 <div className="main-links">
                     <Route path="/custom-page" exact={true} component={EventCard}/>
                     <Route path="/" exact={true} component={HomePage}/>
-                    <Route path="/bos" exact={true} component={BlankPage}/>
+                    <Route path="/registeredEvents" exact={true} component={
+                        () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
+                    }/>
                     <Route path="/add-event" exact={true} component={AddEvent}/>
                 </div>
             </div>

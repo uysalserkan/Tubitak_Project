@@ -70,7 +70,7 @@ function QRCodeModal(props) {
                                 onClick={() => {
                                     if (isVaidEmail()) {
                                         qRCodeAPI.sendQRCode(props.eventId, props.user.tcNo, emailAddress).then((response) => {
-                                            if (response.messageResponseType == MessageType.SUCCESS) {
+                                            if (response.messageResponseType === MessageType.SUCCESS) {
                                                 toast.success(`${response.message}`, {
                                                         position: "top-right",
                                                         autoClose: 5000,

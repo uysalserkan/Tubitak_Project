@@ -9,7 +9,6 @@ import QRCodeModal from "./Modals/QRCodeModals";
 import {UserModel} from "../api/models/UserModel";
 import UpdateEventModal from "./Modals/UpdateEventModal";
 import {QRCodeModel} from "../api/models/QRCodeModel";
-import {QRCodeAPI} from "../api/QRCodeAPI";
 
 const initialUserState: UserModel = {
     tcNo: "",

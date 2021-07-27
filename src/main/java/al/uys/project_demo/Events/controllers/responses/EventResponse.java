@@ -4,6 +4,8 @@ import al.uys.project_demo.Events.enums.EventCategory;
 import al.uys.project_demo.Events.models.Event;
 import lombok.Getter;
 
+import java.util.StringJoiner;
+
 @Getter
 public class EventResponse {
   private final Long id;
@@ -24,5 +26,19 @@ public class EventResponse {
     this.eventStatus = event.getEventStatus();
     this.location = new LocationResponse(event.getLocation());
     this.eventCategory = event.getEventCategory();
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", EventResponse.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("eventName='" + eventName + "'")
+        .add("startDate='" + startDate + "'")
+        .add("endDate='" + endDate + "'")
+        .add("eventStatus=" + eventStatus)
+        .add("quota=" + quota)
+        .add("location=" + location)
+        .add("eventCategory=" + eventCategory)
+        .toString();
   }
 }

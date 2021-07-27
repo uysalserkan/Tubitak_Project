@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useMemo, useState} from "react";
 import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import EventCard from "../components/EventCard";
 import moment from "moment";
@@ -8,7 +8,7 @@ function HomePage(props) {
     const eventAPI = new EventAPI();
 
 
-    useEffect(() => {
+    useMemo(() => {
         eventAPI.getEvent().then(data => setEventModelResponse(data));
     }, [])
 

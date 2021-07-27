@@ -1,12 +1,14 @@
 package al.uys.project_demo.User.controllers;
 
 import al.uys.project_demo.Commons.MessageResponse;
+import al.uys.project_demo.Events.controllers.responses.EventResponse;
 import al.uys.project_demo.User.controllers.response.QRCodeResponse;
 import al.uys.project_demo.User.services.QRCodeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -30,5 +32,11 @@ public class QRCodeController {
       @RequestParam Long eventId, @RequestParam String tcno, @RequestParam String email)
       throws MessagingException, IOException {
     return qrCodeService.sendMail(eventId, tcno, email);
+  }
+
+  @GetMapping("{tcno}")
+  public List<EventResponse> getAllEventRegistered(@PathVariable String tcno)
+      throws MessageResponse {
+    return qrCodeService.getAllRegisteredEventsWithTCNumber(tcno);
   }
 }

@@ -6,6 +6,7 @@ import al.uys.project_demo.Events.controllers.responses.EventResponse;
 import al.uys.project_demo.Events.services.EventService;
 import al.uys.project_demo.User.controllers.response.QRCodeResponse;
 import al.uys.project_demo.User.controllers.response.UserResponse;
+import al.uys.project_demo.User.models.QRCode;
 import al.uys.project_demo.User.repositories.QRCodeRepository;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -23,7 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 @Service
 public class QRCodeService {
@@ -135,6 +138,23 @@ public class QRCodeService {
       } catch (Exception e) {
         return new MessageResponse(e.toString(), MessageResponseType.ERROR);
       }
+    }
+  }
+
+  public List<EventResponse> getAllRegisteredEventsWithTCNumber(String tcno)
+      throws MessageResponse {
+    if (!qrCodeRepository.existsByUserTcNo(tcno)) {
+      throw new MessageResponse(
+          "Sorry, user cannot found with %s T.C. number".formatted(tcno),
+          MessageResponseType.ERROR);
+    } else {
+      List<QRCode> qrCodeList = qrCodeRepository.getAllByUserTcNo(tcno);
+      List<EventResponse> eventResponseList = new ArrayList<>();
+      for (QRCode code : qrCodeList) {
+        eventResponseList.add(eventService.getEvent(code.getEventId()));
+      }
+
+      return eventResponseList;
     }
   }
 }

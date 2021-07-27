@@ -1,6 +1,7 @@
 import {QRCodeModel} from "./models/QRCodeModel";
 import axios from "axios";
 import {MessageResponse} from "../dto/MessageResponse";
+import {EventQueryResponse} from "./EventAPI";
 
 export class QRCodeAPI {
     async getQRCode(eventId: Number, tcNo: String): Promise<QRCodeModel> {
@@ -13,5 +14,10 @@ export class QRCodeAPI {
         // http://localhost:8080/qrcode/mail?eventId=24&tcno=12345678910&email=uysalserkan08@gmail.com
         return response.data
 
+    }
+
+    async getAllEventRegistered(tcNo: String): Promise<EventQueryResponse[]> {
+        const response = await axios.get(`http://localhost:8080/qrcode/${tcNo}`);
+        return response.data;
     }
 }
