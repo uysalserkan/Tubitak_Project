@@ -6,7 +6,9 @@ import al.uys.project_demo.User.services.QRCodeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 @RestController
 @CrossOrigin
@@ -25,8 +27,9 @@ public class QRCodeController {
     return qrCodeService.getQRCodeWithEventIdAndTcno(event_id, user_tcno);
   }
 
-  @GetMapping
-  public ResponseEntity<String> getstring() {
-    return ResponseEntity.ok("bişiler");
+  @PostMapping("mail")
+  public MessageResponse sendMail(@RequestParam Long eventId, @RequestParam String tcno, @RequestParam String email)
+      throws MessagingException, IOException {
+    return qrCodeService.sendMail(eventId, tcno,email);
   }
 }

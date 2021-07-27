@@ -19,4 +19,15 @@ public class QRCodeResponse {
     this.lastName = qrCode.getLastName();
     this.userTcNo = qrCode.getUserTcNo();
   }
+
+  public String toString() {
+    return ("{"
+            + "\"eventId\":%d,"
+            + "\"eventName\":\"%s\","
+            + "\"firstName\":\"%s\","
+            + "\"lastName\":\"%s\","
+            + "\"userTcNo\":\"%s\""
+            + "}")
+        .formatted(eventId, eventName, firstName, lastName, userTcNo);
+  }
 }
