@@ -81,6 +81,7 @@ function QRCodeModal(props) {
                                                         progress: undefined,
                                                     }
                                                 );
+                                                setIsSavedQRCode(true);
                                             } else {
                                                 toast.warn(`${response.message}`, {
                                                         position: "top-right",
@@ -136,7 +137,7 @@ function QRCodeModal(props) {
                 <Button variant="danger" id="download"
                         onClick={() => {
                             if (!isSavedQRCode) {
-                                toast.warning(`You have to save your QRCode for close this window..`, {
+                                toast.warning(`You have to save or send email your QRCode for close this window..`, {
                                         position: "top-right",
                                         autoClose: 5000,
                                         hideProgressBar: false,
@@ -158,6 +159,7 @@ function QRCodeModal(props) {
                                     }
                                 );
                                 setIsSavedQRCode(false)
+                                setEmailAddress("");
                                 props.handleClose();
                             }
                         }
