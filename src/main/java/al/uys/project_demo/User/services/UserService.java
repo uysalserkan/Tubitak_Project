@@ -52,7 +52,7 @@ public class UserService {
           MessageResponseType.ERROR);
     }
 
-    if (event.getEventStartDate().isBefore(LocalDate.now())) {
+    if (event.getEventEndDate().isBefore(LocalDate.now())) {
       return new MessageResponse(
           "%s Eventinin tarihi geçtiği için başvuru yapamazsınız..".formatted(event.getEventName()),
           MessageResponseType.ERROR);
@@ -75,7 +75,12 @@ public class UserService {
     }
 
     AddQRCodeRequest registerUserToEvent =
-        new AddQRCodeRequest(event.getId(), event.getEventName(), user.getId(), user.getTcNo());
+        new AddQRCodeRequest(
+            event.getId(),
+            event.getEventName(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getTcNo());
 
     user.addQRCode(registerUserToEvent.toQRCode());
 

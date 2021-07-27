@@ -26,6 +26,21 @@ export class EventAPI {
         return response.data;
     }
 
+    async getEventById(id: number): Promise<EventQueryResponse> {
+        const response = await axios.get<EventQueryResponse>(`http://localhost:8080/events/${id}`)
+        return response.data;
+    }
+
+    async updateEventById(id: number, eventModel: EventModel): Promise<MessageResponse> {
+        const response = await axios.put(`http://localhost:8080/events/${id}`, eventModel)
+        return response.data;
+    }
+
+    async deleteEventById(id: number): Promise<MessageResponse> {
+        const response = await axios.delete(`http://localhost:8080/events/${id}`)
+        return response.data;
+    }
+
     async postEvent(eventModel: EventModel): Promise<MessageResponse> {
         const response = await axios.post("http://localhost:8080/events", eventModel);
         return response.data;

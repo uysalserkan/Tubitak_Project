@@ -23,7 +23,6 @@ public class AddEventRequest {
       max = 255,
       min = 5,
       message = "Girdiğiniz başlık 5 karakterden az veya 255 karakterden çok olmaaz.")
-  @NotEmpty(message = "Etkinlik adını boş bırakamazsınız.")
   private final String eventName;
 
   @NotEmpty(message = "Etkinlik başlangıç tarihini boş bırakamazsınız.")

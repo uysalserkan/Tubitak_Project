@@ -26,8 +26,9 @@ public class EventService {
     return eventRepository.findAll();
   }
 
-  public MessageResponse addEvent(AddEventRequest event) {
-    if (LocalDate.parse(event.getStartDate()).isAfter(LocalDate.parse(event.getEndDate()))) {
+  public MessageResponse addEvent(Event event) {
+    if (LocalDate.parse(event.getEventStartDate().toString())
+        .isAfter(LocalDate.parse(event.getEventEndDate().toString()))) {
       return new MessageResponse(
           "Bir event'i başlangıç tarihi, bitiş tarihinden sonra olacak şekilde oluşturamazsınız..",
           MessageResponseType.ERROR);
@@ -35,13 +36,13 @@ public class EventService {
 
     try {
 
-      eventRepository.save(event.toEvent());
+      eventRepository.save(event);
+      return new MessageResponse(
+          "%s adına sahip event sisteme eklendi.".formatted(event.getEventName()),
+          MessageResponseType.SUCCESS);
     } catch (Exception e) {
       return new MessageResponse(e.toString(), MessageResponseType.ERROR);
     }
-    return new MessageResponse(
-        "%s adına sahip event sisteme eklendi.".formatted(event.getEventName()),
-        MessageResponseType.SUCCESS);
   }
 
   public MessageResponse updateEvent(UpdateEventRequest updatedEvent, Long id) {
@@ -85,7 +86,7 @@ public class EventService {
                     new EntityNotFoundException(
                         "%d id'ye sahip bir event bulunamadı. Lütfen tekrar kontrol edip deneyiniz.."
                             .formatted(id)));
-    if (!event.getEventStartDate().isAfter(LocalDate.now())) {
+    if (!event.getEventEndDate().isAfter(LocalDate.now())) {
       return new MessageResponse(
           "%s adlı event'in tarihi geçtiği için silme işlemini yapamazsınız.."
               .formatted(event.getEventName()),

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MessageResponse {
+public class MessageResponse extends Throwable {
   private final String message;
   private final MessageResponseType messageResponseType;
 

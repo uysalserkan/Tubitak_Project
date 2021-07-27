@@ -14,21 +14,26 @@ public class AddQRCodeRequest {
   @NotBlank(message = "Event adını boş bırakamazsınız..")
   private final String eventName;
 
-  @NotBlank(message = "User ID numarasını boş bırakamazsınız..")
-  private final Long userId;
+  @NotBlank(message = "Kullanıcı firstName yeri boş bırakılamaz..")
+  private final String firstName;
+
+  @NotBlank(message = "Kullanıcı firstName yeri boş bırakılamaz..")
+  private final String lastName;
 
   @Size(min = 11, max = 11, message = "T.C. numarası 11 haneli olmak zorundadır.")
   @NotBlank(message = "User T.C. nuramasını boş bırakamazsınız..")
   private final String userTcNo;
 
-  public AddQRCodeRequest(Long eventId, String eventName, Long userId, String userTcNo) {
+  public AddQRCodeRequest(
+      Long eventId, String eventName, String firstName, String lastName, String userTcNo) {
     this.eventId = eventId;
     this.eventName = eventName;
-    this.userId = userId;
     this.userTcNo = userTcNo;
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   public QRCode toQRCode() {
-    return new QRCode(eventId, eventName, userId, userTcNo);
+    return new QRCode(eventId, eventName, firstName, lastName, userTcNo);
   }
 }
