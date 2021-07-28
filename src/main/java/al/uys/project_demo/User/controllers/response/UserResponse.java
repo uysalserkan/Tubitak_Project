@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class UserResponse {
-  private String tcNo;
-  private String firstName;
-  private String lastName;
+  private final String tcNo;
+  private final String firstName;
+  private final String lastName;
 
   public UserResponse(final User user) {
     this.tcNo = user.getTcNo();
@@ -15,5 +15,3 @@ public class UserResponse {
     this.firstName = user.getFirstName();
   }
 }
-
-// TODO: Implemente Edilecek.

@@ -22,19 +22,19 @@ public class AddEventRequest {
   @Size(
       max = 255,
       min = 5,
-      message = "Girdiğiniz başlık 5 karakterden az veya 255 karakterden çok olmaaz.")
+      message = "Event name have to between include 5-255 characters")
   private final String eventName;
 
-  @NotEmpty(message = "Etkinlik başlangıç tarihini boş bırakamazsınız.")
+  @NotEmpty(message = "You cannot blank start date")
   private final String startDate;
 
-  @NotEmpty(message = "Etkinlik bitiş tarihini boş bırakamazsınız.")
+  @NotEmpty(message = "You cannot blank end date")
   private final String endDate;
 
   //  @NotEmpty(message = "Etkinlik durumunu boş bırakamazsınız. true/false ?")
   private final boolean eventStatus;
 
-  @Min(value = 5, message = "En az 5 kişilik bir etkinlik oluşturmalısınız..")
+  @Min(value = 5, message = "You have to give minimum 5 quota")
   private final int quota;
 
   //  @NotBlank(message = "EEEEEE")

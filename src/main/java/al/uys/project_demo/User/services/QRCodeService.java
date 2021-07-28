@@ -132,8 +132,7 @@ public class QRCodeService {
         javaMailSender.send(msg);
 
         return new MessageResponse(
-            "E-mail sent to verilen email adresi..",
-            MessageResponseType.SUCCESS); // TODO: düzenlenecek
+            "E-mail sent to %s".formatted(email), MessageResponseType.SUCCESS);
 
       } catch (Exception e) {
         return new MessageResponse(e.toString(), MessageResponseType.ERROR);

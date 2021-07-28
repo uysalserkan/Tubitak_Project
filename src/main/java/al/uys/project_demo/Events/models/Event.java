@@ -68,7 +68,6 @@ public class Event {
   }
   // TODO: Question ekleme sistemi ya constructor üzerinden veya methodlar üzerinden implemente
   // edilecek.
-  // TODO: User kayıt entegre edilecek.
   public void updateEvent(final Event newEvent) {
     this.eventName = newEvent.eventName;
     this.eventStatus = newEvent.eventStatus;
