@@ -32,6 +32,7 @@ export class EventAPI {
     }
 
     async updateEventById(id: number, eventModel: EventModel): Promise<MessageResponse> {
+        eventModel.eventStatus = true;
         const response = await axios.put(`http://localhost:8080/events/${id}`, eventModel)
         return response.data;
     }
@@ -42,6 +43,7 @@ export class EventAPI {
     }
 
     async postEvent(eventModel: EventModel): Promise<MessageResponse> {
+        eventModel.eventStatus = true;
         const response = await axios.post("http://localhost:8080/events", eventModel);
         return response.data;
     }

@@ -18,7 +18,6 @@ function QRCodeModal(props) {
     }
 
     const downloadQRCode = () => {
-        // Generate download with use canvas and stream
 
         const canvas = document.getElementById(`${props.user.tcNo}_qrCode`) as HTMLCanvasElement;
 
@@ -28,7 +27,6 @@ function QRCodeModal(props) {
         link.download = `${props.user.tcNo}_qrCode.png`;
         link.href = img;
         link.click();
-        // document.write('<img src="' + img + '"/>');
     };
 
 
@@ -54,6 +52,7 @@ function QRCodeModal(props) {
                                 <FormLabel><strong>E Mail Address</strong></FormLabel>
                                 <FormControl
                                     type="email"
+                                    placeholder="serkan@uys.al"
                                     name="email"
                                     onChange={(e) => {
                                         setEmailAddress(e.target.value);
@@ -70,6 +69,8 @@ function QRCodeModal(props) {
                                 onClick={() => {
                                     if (isVaidEmail()) {
                                         qRCodeAPI.sendQRCode(props.eventId, props.user.tcNo, emailAddress).then((response) => {
+
+
                                             if (response.messageResponseType === MessageType.SUCCESS) {
                                                 toast.success(`${response.message}`, {
                                                         position: "top-right",
@@ -118,7 +119,8 @@ function QRCodeModal(props) {
                                             }
                                         );
                                     }
-                                }}
+                                }
+                                }
                             >Send</Button>
                         </Col>
                     </Row>

@@ -33,35 +33,33 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  // TODO: addUserRequest ayrı bir api den gelebilir. ??
-
   @Transactional
   public MessageResponse registerUserToEvent(Long eventId, AddUserRequest addUserRequest) {
     if (!eventRepository.existsById(eventId)) {
       return new MessageResponse(
-          "%d ile aramaya çalıştığınız event bulunmamaktadır.".formatted(eventId),
-          MessageResponseType.ERROR);
+          "Event couldn't find with %d id number".formatted(eventId), MessageResponseType.ERROR);
     }
 
     Event event = eventRepository.getById(eventId);
 
-    if (!event.getEventStatus()) {
-      return new MessageResponse(
-          "%s Eventi şu anda başvuru yapılabilir değildir (status=false), lütfen daha sonra tekrar deneyiniz.."
-              .formatted(event.getEventName()),
-          MessageResponseType.ERROR);
-    }
+    // TODO: Eventler o an için iptal olmuş olabilir, ondan dolayı bu fonksiyonu daha sonra
+    // kullanıma açabiliriz fakat şimdilik kapalı duracak.
+    //    if (!event.getEventStatus()) {
+    //      return new MessageResponse(
+    //          "%s Eventi şu anda başvuru yapılabilir değildir (status=false), lütfen daha sonra
+    // tekrar deneyiniz.."
+    //              .formatted(event.getEventName()),
+    //          MessageResponseType.ERROR);
+    //    }
 
     if (event.getEventEndDate().isBefore(LocalDate.now())) {
       return new MessageResponse(
-          "%s Eventinin tarihi geçtiği için başvuru yapamazsınız..".formatted(event.getEventName()),
-          MessageResponseType.ERROR);
+          "%s event is passed".formatted(event.getEventName()), MessageResponseType.ERROR);
     }
 
     if (!userRepository.existsByTcNo(addUserRequest.getTcNo())) {
       return new MessageResponse(
-          "%s ile kayıt etmeye çalıştığınız kullanıcı bulunmamaktadır."
-              .formatted(addUserRequest.getTcNo()),
+          "User didn't found with %s T.C. number".formatted(addUserRequest.getTcNo()),
           MessageResponseType.ERROR);
     }
 
@@ -69,8 +67,8 @@ public class UserService {
 
     if (qrCodeRepository.existsByUserTcNoAndEventId(user.getTcNo(), eventId)) {
       return new MessageResponse(
-          "%s ile kayıt etmeye çalıştığınız kullanıcı hali hazırda %s event'e kayıtlıdır.."
-              .formatted(addUserRequest.getTcNo(), event.getEventName()),
+          "User is already registered at %s the event with %s T.C. number"
+              .formatted(event.getEventName(), addUserRequest.getTcNo()),
           MessageResponseType.ERROR);
     }
 
@@ -86,7 +84,7 @@ public class UserService {
 
     if (event.isQuotaFull()) {
       return new MessageResponse(
-          "%s Eventinin kontenjanı dolmuştur, event'den bir kullanıcının çıkması durumunda tekrar başvuru yapabilirsiniz.."
+          "%s does not have any acceptable quota, please try again later"
               .formatted(event.getEventName()),
           MessageResponseType.ERROR);
     } else {
@@ -97,7 +95,7 @@ public class UserService {
     eventRepository.save(event);
 
     return new MessageResponse(
-        "%s TC numarasına sahip olan kullanıcı %s Event'ine kayıt edildi."
+        "User is registered wiht %s T.C. number at %s event"
             .formatted(user.getTcNo(), event.getEventName()),
         MessageResponseType.SUCCESS);
   }
@@ -105,23 +103,22 @@ public class UserService {
   public MessageResponse addUser(AddUserRequest user) {
     if (userRepository.existsByTcNo(user.getTcNo())) {
       return new MessageResponse(
-          "%s T.C. numarasına sahip kullanıcı hali hazırda sistemde kayıtlı bulunuyor, lütfen giriş yapmayı deneyiniz.."
+          "%s T.C. number is already used by another user, please try to login"
               .formatted(user.getTcNo()),
           MessageResponseType.ERROR);
     }
 
     userRepository.save(user.toUser());
     return new MessageResponse(
-        "%s T.C. numarasına sahip %s %s kullanıcı sisteme kayıt edildi..."
-            .formatted(user.getTcNo(), user.getFirstName(), user.getLastName()),
+        "%s %s, you are registered with %s T.C. number"
+            .formatted(user.getFirstName(), user.getLastName(), user.getTcNo()),
         MessageResponseType.SUCCESS);
   }
 
   public UserResponse getUserWithTCNo(String tcNo) {
     if (!userRepository.existsByTcNo(tcNo)) {
       throw new EntityNotFoundException(
-          "%s T.C. numarasına sahip kullanıcı sistemde kayıtlı değildir, lütfen kayıt olunuz.."
-              .formatted(tcNo));
+          "%s T.C. number is not linked any user, please register".formatted(tcNo));
     }
     User user = userRepository.findByTcNo(tcNo);
     return new UserResponse(user);

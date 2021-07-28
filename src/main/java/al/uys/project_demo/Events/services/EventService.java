@@ -2,7 +2,6 @@ package al.uys.project_demo.Events.services;
 
 import al.uys.project_demo.Commons.MessageResponse;
 import al.uys.project_demo.Commons.enums.MessageResponseType;
-import al.uys.project_demo.Events.controllers.requests.AddEventRequest;
 import al.uys.project_demo.Events.controllers.requests.UpdateEventRequest;
 import al.uys.project_demo.Events.controllers.responses.EventResponse;
 import al.uys.project_demo.Events.models.Event;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,16 +28,14 @@ public class EventService {
     if (LocalDate.parse(event.getEventStartDate().toString())
         .isAfter(LocalDate.parse(event.getEventEndDate().toString()))) {
       return new MessageResponse(
-          "Bir event'i başlangıç tarihi, bitiş tarihinden sonra olacak şekilde oluşturamazsınız..",
-          MessageResponseType.ERROR);
+          "Start Date have to be before the End Date", MessageResponseType.ERROR);
     }
 
     try {
 
       eventRepository.save(event);
       return new MessageResponse(
-          "%s adına sahip event sisteme eklendi.".formatted(event.getEventName()),
-          MessageResponseType.SUCCESS);
+          "%s is added".formatted(event.getEventName()), MessageResponseType.SUCCESS);
     } catch (Exception e) {
       return new MessageResponse(e.toString(), MessageResponseType.ERROR);
     }
@@ -52,18 +48,16 @@ public class EventService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "%d id'ye sahip bir event bulunamadı. Lütfen tekrar kontrol edip deneyiniz.."
-                            .formatted(id)));
+                        "Event didn't found with %d ID number".formatted(id)));
     if (!event.getEventStartDate().isAfter(LocalDate.now())) {
       return new MessageResponse(
-          "%s adlı event'in tarihi geçtiği için güncelleme işlemini yapamazsınız.."
-              .formatted(event.getEventName()),
+          "You cannot update %s, because the event is passed".formatted(event.getEventName()),
           MessageResponseType.ERROR);
     }
 
     if (event.getEventStartDate().isAfter(event.getEventEndDate())) {
       return new MessageResponse(
-          "%s adlı event'in başlangıç tarihi bitiş tarihinden sonra olacak şekilde güncelleyemezsiniz..."
+          "You cannot update with an end date before the start date"
               .formatted(event.getEventName()),
           MessageResponseType.ERROR);
     }
@@ -73,8 +67,7 @@ public class EventService {
     eventRepository.save(event);
 
     return new MessageResponse(
-        "%d ID'ye sahip olan event başarı ile güncellendi.".formatted(id),
-        MessageResponseType.SUCCESS);
+        "%s is updated".formatted(event.getEventName()), MessageResponseType.SUCCESS);
   }
 
   public MessageResponse deleteEvent(Long id) {
@@ -84,23 +77,21 @@ public class EventService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "%d id'ye sahip bir event bulunamadı. Lütfen tekrar kontrol edip deneyiniz.."
-                            .formatted(id)));
+                        "Event didn't found with %d ID number".formatted(id)));
     if (!event.getEventEndDate().isAfter(LocalDate.now())) {
       return new MessageResponse(
-          "%s adlı event'in tarihi geçtiği için silme işlemini yapamazsınız.."
+          "You cannot delete the %s event, because the event is passed"
               .formatted(event.getEventName()),
           MessageResponseType.ERROR);
     }
     eventRepository.deleteById(id);
     return new MessageResponse(
-        "%d ID'ye sahip event silindi.".formatted(id), MessageResponseType.SUCCESS);
+        "%s deleted".formatted(event.getEventName()), MessageResponseType.SUCCESS);
   }
 
   public EventResponse getEvent(Long id) {
     if (!eventRepository.existsById(id)) {
-      throw new EntityNotFoundException(
-          "%d ID numaralı event bulunamadı, lütfen kontrol edin..".formatted(id));
+      throw new EntityNotFoundException("Event didn't found with %d ID number.".formatted(id));
     }
     Event event = eventRepository.getById(id);
     return new EventResponse(event);

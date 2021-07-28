@@ -8,20 +8,20 @@ import javax.validation.constraints.Size;
 
 @Getter
 public class AddQRCodeRequest {
-  @NotBlank(message = "Event ID numarasını boş bırakamazsınız.")
+  @NotBlank(message = "You cannot blank event id")
   private final Long eventId;
 
-  @NotBlank(message = "Event adını boş bırakamazsınız..")
+  @NotBlank(message = "You cannot blank event name")
   private final String eventName;
 
-  @NotBlank(message = "Kullanıcı firstName yeri boş bırakılamaz..")
+  @NotBlank(message = "You cannot blank firstname")
   private final String firstName;
 
-  @NotBlank(message = "Kullanıcı firstName yeri boş bırakılamaz..")
+  @NotBlank(message = "You cannot blank lastname")
   private final String lastName;
 
-  @Size(min = 11, max = 11, message = "T.C. numarası 11 haneli olmak zorundadır.")
-  @NotBlank(message = "User T.C. nuramasını boş bırakamazsınız..")
+  @Size(min = 11, max = 11, message = "You have to enter a valid T.C. number")
+  @NotBlank(message = "You cannot blank T.C. number")
   private final String userTcNo;
 
   public AddQRCodeRequest(

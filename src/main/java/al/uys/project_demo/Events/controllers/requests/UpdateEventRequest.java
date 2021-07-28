@@ -16,29 +16,25 @@ import java.util.List;
 @ToString
 @RequiredArgsConstructor
 public class UpdateEventRequest {
-  @Size(
-      max = 255,
-      min = 5,
-      message = "Girdiğiniz başlık 5 karakterden az veya 255 karakterden çok olmaaz.")
-  @NotEmpty(message = "Etkinlik adını boş bırakamazsınız.")
+  @Size(max = 255, min = 5, message = "Event name have to between include 5-255 characters")
   private final String eventName;
 
-  @NotEmpty(message = "Etkinlik başlangıç tarihini boş bırakamazsınız.")
+  @NotEmpty(message = "You cannot blank start date")
   private final String startDate;
 
-  @NotEmpty(message = "Etkinlik bitiş tarihini boş bırakamazsınız.")
+  @NotEmpty(message = "You cannot blank end date")
   private final String endDate;
 
   //  @NotEmpty(message = "Etkinlik durumunu boş bırakamazsınız. true/false ?")
   private final boolean eventStatus;
 
-  @Min(value = 5, message = "En az 5 kişilik bir etkinlik oluşturmalısınız..")
+  @Min(value = 5, message = "You have to give minimum 5 quota")
   private final int quota;
 
   //  @NotBlank(message = "EEEEEE")
   private final AddLocationRequest location;
 
-//  @NotEmpty(message = "Etkinlik categorisinden en az 1 tane seçmelisiniz..")
+  //  @NotEmpty(message = "You cannot blank eventCategory")
   private final EventCategory eventCategory;
 
   public Event toEvent() {

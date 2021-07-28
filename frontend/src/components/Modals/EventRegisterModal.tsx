@@ -47,10 +47,11 @@ function EventRegisterModal(props) {
         const value = event.target.value;
 
         setUserModel(updateInpuStete(field, value));
+
     }
 
 
-    const updateInpuStete = (field: String, value: any) => {
+    const updateInpuStete = (field: String, value: String) => {
         const prevUserModel = {...userModel};
         switch (field) {
             case "tcno":
@@ -74,15 +75,26 @@ function EventRegisterModal(props) {
     }
 
     const registerUser = async (userModel: UserModel) => {
-        return await userAPI.postUser(userModel);
+        return await userAPI.postUser(userModel)
     }
 
     const registerEventUser = async (id: number, userModel: UserModel) => {
+        // const response = await registerUser(userModel);
+        // if (response.messageResponseType === MessageType.SUCCESS) {
         return await userAPI.registerUserToEvent(id, userModel);
+        // } else {
+        //     return response;
+        // }
+
     }
 
     return (
-        <Modal show={props.isOpen} onHide={props.handleClose} animation={true} backdrop="static">
+        <Modal show={props.isOpen} onHide={props.handleClose} animation={true} backdrop="static" onExited={() => {
+            setIsChecked(false);
+            setIsRegistered(false);
+            setUserModel(initialUserState);
+        }
+        }>
             <Modal.Header>
                 <Modal.Title>{`Register to ${props.eventName}`}</Modal.Title>
             </Modal.Header>
@@ -109,7 +121,7 @@ function EventRegisterModal(props) {
                             <Button variant="secondary"
                                     onClick={() => {
                                         if (userModel.tcNo.length < 11) {
-                                            toast.warn(`Please enter a valid T.C. number..`, {
+                                            toast.warn(`Please enter a valid T.C. number`, {
                                                     position: "top-right",
                                                     autoClose: 5000,
                                                     hideProgressBar: false,
@@ -121,36 +133,53 @@ function EventRegisterModal(props) {
                                             );
                                         } else {
                                             getUser(userModel.tcNo).then((data) => {
-                                                setUserModel(data);
-                                                setIsChecked(true);
-                                                setIsRegistered(true);
+                                                setUserModel(data)
+                                                if (data.firstName == null) {
+                                                    setIsChecked(true);
+                                                    setIsRegistered(false);
 
-                                                toast.info(`The user is loaded from database..`, {
-                                                        position: "top-right",
-                                                        autoClose: 5000,
-                                                        hideProgressBar: false,
-                                                        closeOnClick: true,
-                                                        pauseOnHover: false,
-                                                        draggable: true,
-                                                        progress: undefined,
-                                                    }
-                                                );
+                                                    toast.warning(`The user is not found in database, you could input your name`, {
+                                                            position: "top-right",
+                                                            autoClose: 5000,
+                                                            hideProgressBar: false,
+                                                            closeOnClick: true,
+                                                            pauseOnHover: false,
+                                                            draggable: true,
+                                                            progress: undefined,
+                                                        }
+                                                    );
+                                                } else {
+                                                    setIsChecked(true);
+                                                    setIsRegistered(true);
 
-                                            }).catch(() => {
-                                                setIsChecked(true);
-                                                setIsRegistered(false);
+                                                    toast.info(`The user is loaded from database`, {
+                                                            position: "top-right",
+                                                            autoClose: 5000,
+                                                            hideProgressBar: false,
+                                                            closeOnClick: true,
+                                                            pauseOnHover: false,
+                                                            draggable: true,
+                                                            progress: undefined,
+                                                        }
+                                                    );
+                                                }
 
-                                                toast.warning(`The user is not found in database, you could input your name..`, {
-                                                        position: "top-right",
-                                                        autoClose: 5000,
-                                                        hideProgressBar: false,
-                                                        closeOnClick: true,
-                                                        pauseOnHover: false,
-                                                        draggable: true,
-                                                        progress: undefined,
-                                                    }
-                                                );
-                                            });
+                                            })
+                                                .catch(() => {
+                                                    setIsChecked(true);
+                                                    setIsRegistered(false);
+
+                                                    toast.warning(`The user is not found in database, you could input your name`, {
+                                                            position: "top-right",
+                                                            autoClose: 5000,
+                                                            hideProgressBar: false,
+                                                            closeOnClick: true,
+                                                            pauseOnHover: false,
+                                                            draggable: true,
+                                                            progress: undefined,
+                                                        }
+                                                    );
+                                                });
                                         }
                                     }}
                                     disabled={isChecked}
@@ -200,8 +229,19 @@ function EventRegisterModal(props) {
                     Cancel
                 </Button>
                 <Button variant="primary" onClick={() => {
-                    if (userModel.firstName.length < 2) {
-                        toast.warn(`Please enter a firstname that has min. 2 characters..`, {
+                    if (!isChecked) {
+                        toast.warn(`Please check your valid T.C. number`, {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: false,
+                                draggable: true,
+                                progress: undefined,
+                            }
+                        )
+                    } else if (userModel.firstName.length < 2) {
+                        toast.warn(`Please enter a firstname that has min. 2 characters`, {
                                 position: "top-right",
                                 autoClose: 5000,
                                 hideProgressBar: false,
@@ -212,7 +252,7 @@ function EventRegisterModal(props) {
                             }
                         )
                     } else if (userModel.lastName.length < 2) {
-                        toast.warn(`Please enter a lastname that has min. 2 characters..`, {
+                        toast.warn(`Please enter a lastname that has min. 2 characters`, {
                                 position: "top-right",
                                 autoClose: 5000,
                                 hideProgressBar: false,
@@ -236,15 +276,20 @@ function EventRegisterModal(props) {
                                                 progress: undefined,
                                             }
                                         );
-
-                                        // props.handleClose();
-                                        // setTimeout((x) => {
-                                        //     window.location.reload();
-                                        // }, 5000);
+                                    } else {
+                                        toast.error(`${response.message}`, {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: false,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
                                     }
                                 }
                             ).catch((err) => {
-                                console.error("ERRORR\n\n" + err);
                                 toast.error(`⚠ ${err}`, {
                                         position: "top-right",
                                         autoClose: 5000,
@@ -272,10 +317,10 @@ function EventRegisterModal(props) {
                                             }
                                         );
 
-                                        getQRCode();
+                                        // getQRCode();
 
                                     } else if (response.messageResponseType === MessageType.ERROR) {
-                                        toast.error(`${response.message}`, {
+                                        toast.error(` ${response.message}`, {
                                                 position: "top-right",
                                                 autoClose: 5000,
                                                 hideProgressBar: false,
@@ -289,7 +334,6 @@ function EventRegisterModal(props) {
 
                                 }
                             ).catch((err) => {
-                                console.error("ERRORR\n\n" + err);
                                 toast.error(`⚠ ${err}`, {
                                         position: "top-right",
                                         autoClose: 5000,
@@ -301,22 +345,21 @@ function EventRegisterModal(props) {
                                     }
                                 );
                             })
-                        }, 100);
+                        }, 300);
 
 
-                        setIsChecked(false);
-                        setIsRegistered(false);
-                        setUserModel(initialUserState);
-                        props.setUser(userModel);
                         setTimeout((x) => {
+                            setIsChecked(false);
+                            setIsRegistered(false);
+                            setUserModel(initialUserState);
+                            props.setUser(userModel);
                             getQRCode();
                             props.openQRCodeModel(true)
 
                             props.handleClose();
 
-                        }, 100)
+                        }, 500)
 
-                        // TODO: Burada dış bağlantıda gelecek olan QRCodeModal'ını açacak olan fonksiyon gelecek ve içerisine eventId ve UserModel'i alacak
                     }
                     /*
                     * Eğer kullanıcı sistemde kayıtlı değilse min. 2 karakterli adı ve soyadı ile kayıt edilecek.

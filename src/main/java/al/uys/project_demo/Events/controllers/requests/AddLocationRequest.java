@@ -12,12 +12,12 @@ import javax.validation.constraints.Size;
 @ToString
 @RequiredArgsConstructor
 public class AddLocationRequest {
-  @Size(min = 3, max = 25, message = "En az 3, en fazla 25 karaketrli enlem bildirebilirsiniz.")
-  @NotEmpty(message = "Enlem dizinini boş bırakamazısnız..")
+  @Size(min = 3, max = 25, message = "Latitude min. 3 max. 25 characters")
+  @NotEmpty(message = "You cannot blank latitude")
   private final String latitude;
 
-  @Size(min = 3, max = 25, message = "En az 3, en fazla 25 karaketrli boylam bildirebilirsiniz.")
-  @NotEmpty(message = "Boylam dizinini boş bırakamazsınız.")
+  @Size(min = 3, max = 25, message = "Longtitude min. 3 max. 25 characters")
+  @NotEmpty(message = "You cannot blank longtitude")
   private final String longtitude;
 
   public Location toLocation() {

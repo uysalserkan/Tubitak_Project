@@ -60,7 +60,6 @@ function UpdateEventModal(props) {
             updatedEventModel.location.latitude = value;
         } else if (field === "longtitude") {
             updatedEventModel.location.longtitude = value;
-            // TODO: Location u şimdilik String yaptık eğer ayırabilirsek string olarak post üzerinden ayırabiliriz.
         } else if (field === "eventCategory") {
             updatedEventModel.eventCategory = value;
         }
