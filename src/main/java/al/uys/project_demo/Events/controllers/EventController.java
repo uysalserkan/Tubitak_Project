@@ -5,6 +5,7 @@ import al.uys.project_demo.Events.controllers.requests.AddEventRequest;
 import al.uys.project_demo.Events.controllers.requests.UpdateEventRequest;
 import al.uys.project_demo.Events.controllers.responses.EventResponse;
 import al.uys.project_demo.Events.services.EventService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,17 +43,20 @@ public class EventController {
     return eventService.getEvent(id);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
   public MessageResponse postEvent(@Valid @RequestBody AddEventRequest event) {
     return eventService.addEvent(event.toEvent());
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/{id}")
   public MessageResponse putEvent(
       @Valid @RequestBody UpdateEventRequest updatedEvent, @PathVariable Long id) {
     return eventService.updateEvent(updatedEvent, id);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{id}")
   public MessageResponse deleteEvent(@PathVariable Long id) {
     return eventService.deleteEvent(id);

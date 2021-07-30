@@ -9,8 +9,8 @@ import al.uys.project_demo.Auth.models.Admin;
 import al.uys.project_demo.Auth.models.Role;
 import al.uys.project_demo.Auth.repositories.AdminRepository;
 import al.uys.project_demo.Auth.repositories.RoleRepository;
-import org.hibernate.mapping.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import al.uys.project_demo.Commons.MessageResponse;
+import al.uys.project_demo.Commons.enums.MessageResponseType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +27,7 @@ import java.util.HashSet;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+  String ROLE_PREFIX = "ROLE_";
 
   private final AuthenticationManager authenticationManager;
   private final AdminRepository adminRepository;
@@ -48,7 +49,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -57,18 +58,21 @@ public class AuthController {
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     String jwt = jwtProvider.generateJwtToken(authentication);
+
+    //    System.out.println("IN AUTHCONTROLLER - JWT TOKEN IS: " + jwt);
     return ResponseEntity.ok(new JwtResponse(jwt));
   }
 
   @PostMapping("/signup")
-  public ResponseEntity signupUser(@Valid @RequestBody SignUpForm signupRequest) {
+  public MessageResponse signupUser(@Valid @RequestBody SignUpForm signupRequest) {
     if (adminRepository.existsAdminByUsername(signupRequest.getUsername())) {
-      return new ResponseEntity(
-          "Username is already used by another user, please try to login", HttpStatus.BAD_REQUEST);
+      return new MessageResponse(
+          "Username is already used by another user, please try to login",
+          MessageResponseType.ERROR);
     }
     if (adminRepository.existsAdminByEmail(signupRequest.getEmail())) {
-      return new ResponseEntity(
-          "Email is already used by another user, please try to login", HttpStatus.BAD_REQUEST);
+      return new MessageResponse(
+          "Email is already used by another user, please try to login", MessageResponseType.ERROR);
     }
 
     // ! Creating admin
@@ -89,7 +93,7 @@ public class AuthController {
                 case "ADMIN":
                   Role admin_role =
                       roleRepository
-                          .findByRole(Roles.ADMIN)
+                          .findByRole(Roles.ROLE_ADMIN)
                           .orElseThrow(
                               () ->
                                   new RuntimeException(
@@ -99,7 +103,7 @@ public class AuthController {
                 default:
                   Role user_role =
                       roleRepository
-                          .findByRole(Roles.USER)
+                          .findByRole(Roles.ROLE_USER)
                           .orElseThrow(
                               () ->
                                   new RuntimeException(
@@ -110,6 +114,11 @@ public class AuthController {
     admin.setRoles(roles);
     adminRepository.save(admin);
 
-    return ResponseEntity.ok("%s admin is registered.".formatted(admin.getUsername()));
+    String signup_role = signupRequest.getRole().stream().toList().get(0);
+
+    return new MessageResponse(
+        "%s %s is registered."
+            .formatted(admin.getUsername(), signup_role.equals("ADMIN") ? "admin" : "user"),
+        MessageResponseType.SUCCESS);
   }
 }
