@@ -1,0 +1,28 @@
+body {
+    background: #007bff;
+    background: linear-gradient(to right, #0062E6, #074d72);
+}
+
+.card-img-left {
+    width: 50%;
+    /* Link to your background image using in the property below! */
+    /*background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512');*/
+    background: scroll center url('https://i.pinimg.com/originals/6b/1c/23/6b1c231fb2562db42cf43da87b13575b.jpg');
+    background-size: cover;
+}
+
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+}
+
+.btn-google {
+    color: white !important;
+    background-color: #ea4335;
+}
+
+.btn-facebook {
+    color: white !important;
+    background-color: #3b5998;
+}

@@ -11,6 +11,7 @@ import AddEventModal from "./Modals/AddEventModal";
 import {EventQueryResponse} from "../api/EventAPI";
 import {QRCodeAPI} from "../api/QRCodeAPI";
 import {toast} from "react-toastify";
+import LoginPage from "../pages/LoginPage";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
@@ -125,6 +126,8 @@ function NavBar() {
                         () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
                     }/>
                     <Route path="/add-event" exact={true} component={AddEvent}/>
+                    <Route path="/login" exact={true} component={LoginPage}/>
+
                 </div>
             </div>
         </Router>
