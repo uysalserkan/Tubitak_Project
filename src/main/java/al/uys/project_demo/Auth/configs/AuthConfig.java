@@ -32,6 +32,7 @@ public class AuthConfig implements Serializable {
   }
 
   private String doGenerateToken(Map<String, Object> claims, String subject) {
+    System.out.println("AUTHCONFIG - CLAIMS: " + claims.toString());
     return Jwts.builder()
         .setClaims(claims)
         .setSubject(subject)

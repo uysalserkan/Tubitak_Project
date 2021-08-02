@@ -5,18 +5,33 @@ import EventCard from "./EventCard";
 import RegisteredEventsPage from "../pages/RegisteredEventsPage";
 import AddEvent from "../pages/AddEvent";
 import HomePage from "../pages/HomePage";
+import jwt from "jwt-decode";
 
 import 'react-toastify/dist/ReactToastify.css';
 import AddEventModal from "./Modals/AddEventModal";
 import {EventQueryResponse} from "../api/EventAPI";
 import {QRCodeAPI} from "../api/QRCodeAPI";
 import {toast} from "react-toastify";
+import LoginPage from "../pages/LoginPage";
+import {AuthAPI} from "../api/AuthAPI";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
     const [searchedTCNo, serSearchedTCNo] = useState("");
     const [registeredEvents, setRegisteredEvents] = useState<EventQueryResponse[]>([]);
     const qrCodeAPI = new QRCodeAPI();
+
+    const authAPI = new AuthAPI();
+
+    let adminName;
+    try {
+
+        // @ts-ignore
+        adminName = jwt(authAPI.getToken()).sub;
+    } catch (e) {
+
+        adminName = "";
+    }
 
     return (
         <Router>
@@ -58,12 +73,13 @@ function NavBar() {
                                 <li className="nav-item">
                                     {/*<a className="nav-link disabled" href="#" aria-disabled="true">Link</a>*/}
                                 </li>
-                                <Button className="position-absolute start-50 btn-success" onClick={() => {
-                                    // <ToastFunct type="INFO" message="Bu bir info mesajıdır."/>
-                                    setAddEventModalOpen(true);
-                                }
+                                <Button className="position-absolute start-50 btn-success" hidden={!adminName}
+                                        onClick={() => {
+                                            // <ToastFunct type="INFO" message="Bu bir info mesajıdır."/>
+                                            setAddEventModalOpen(true);
+                                        }
 
-                                }> Add Event</Button>
+                                        }> Add Event</Button>
                                 <AddEventModal
                                     isOpen={isAddEventModalOpen}
                                     handleClose={() => setAddEventModalOpen(false)}
@@ -72,7 +88,6 @@ function NavBar() {
                             </ul>
                             <Form className="d-flex" onSubmit={(e) => {
                                 e.preventDefault();
-                                console.log(e.target)
                             }}>
                                 <FormControl className=" me-2"
                                              type="text"
@@ -115,6 +130,45 @@ function NavBar() {
 
                                 }}>Search</Link>
                             </Form>
+                            <div style={{marginLeft: "12px", marginRight: "10px"}}>
+                                {
+                                    adminName === "" ? <Button onClick={() => {
+                                        window.location.replace("/login");
+                                    }}> Log in</Button> : <li className="nav-item dropdown">
+                                        <button className="btn btn-secondary dropdown-toggle" type="button"
+                                                id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            Control Panel
+                                        </button>
+                                        <ul className="dropdown-menu dropdown-menu-dark"
+                                            aria-labelledby="navbarDarkDropdownMenuLink">
+                                            <li><a className="dropdown-item" onClick={() => {
+                                                console.log("admin paneline gidiyoruz..")
+                                            }
+                                            }>Admin</a></li>
+                                            <hr/>
+                                            <li><a className="dropdown-item" onClick={() => {
+                                                authAPI.logout()
+                                                setTimeout(() => {
+                                                    window.location.reload()
+                                                }, 100)
+                                            }
+                                            }>Log out</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            </div>
+
+                            {/*<Button style={{marginLeft: "12px"}} onClick={() => {*/}
+                            {/*    if (adminName === "") {*/}
+                            {/*        window.location.replace("/login");*/}
+                            {/*    } else {*/}
+                            {/*        authAPI.logout()*/}
+                            {/*        setTimeout(() => {*/}
+                            {/*            window.location.reload()*/}
+                            {/*        }, 100)*/}
+                            {/*    }*/}
+                            {/*}}>{adminName === "" ? "Log in" : "Log out"}</Button>*/}
                         </div>
                     </div>
                 </Nav>
@@ -125,6 +179,8 @@ function NavBar() {
                         () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
                     }/>
                     <Route path="/add-event" exact={true} component={AddEvent}/>
+                    <Route path="/login" exact={true} component={LoginPage}/>
+
                 </div>
             </div>
         </Router>
