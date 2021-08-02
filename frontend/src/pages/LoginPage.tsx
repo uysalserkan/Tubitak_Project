@@ -1,7 +1,50 @@
 import './LoginPage.css';
+import React, {ChangeEvent, useState} from "react";
+import {LoginModel} from "../api/models/LoginModel";
+import {AuthAPI} from "../api/AuthAPI";
+import {Button} from "react-bootstrap";
+import {MessageType} from "../dto/MessageResponse";
+import {toast, ToastContainer} from "react-toastify";
+
+const initialAdminState: LoginModel = {
+    username: "",
+    password: ""
+}
 
 function LoginPage() {
+    const [adminModel, setAdminModel] = useState(initialAdminState);
+    const authAPI = new AuthAPI();
+
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const field = event.target.name;
+        const value = event.target.value;
+
+        setAdminModel(updateInputState(field, value));
+
+    }
+
+    const updateInputState = (field: String, value: String) => {
+        const prevUserModel = {...adminModel};
+        switch (field) {
+            case "username":
+                prevUserModel.username = value;
+                break;
+            case "password":
+                prevUserModel.password = value;
+                break;
+        }
+
+        return prevUserModel;
+    }
+
+    function loginAdmin() {
+        return authAPI.loginAdmin(adminModel);
+    }
+
+
     return (
+        <body className="login-body">
+
         <div className="container" style={{marginTop: "120px", marginBottom: "120px"}}>
             <div className="row">
                 <div className="col-lg-10 col-xl-9 mx-auto">
@@ -11,58 +54,85 @@ function LoginPage() {
                         <div className="card-body p-4 p-sm-5">
                             <h5 className="card-title text-center mb-5 fw-light fs-5"
                                 style={{paddingBottom: "53px"}}>Admin - Login</h5>
-                            <form>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                            }}>
 
                                 <div className="form-floating mb-3">
                                     <input type="text" className="form-control" id="floatingInputUsername"
+                                           name="username"
+                                           onChange={onChange}
                                            placeholder="username" required autoFocus/>
                                     <label htmlFor="floatingInputUsername">Username</label>
                                 </div>
 
-                                {/*<div className="form-floating mb-3">*/}
-                                {/*    <input type="email" className="form-control" id="floatingInputEmail"*/}
-                                {/*           placeholder="name@example.com"/>*/}
-                                {/*    <label htmlFor="floatingInputEmail">Email address</label>*/}
-                                {/*</div>*/}
-
-                                {/*<hr/>*/}
-
                                 <div className="form-floating mb-3">
                                     <input type="password" className="form-control" id="floatingPassword" required
+                                           name="password"
+                                           onChange={onChange}
                                            placeholder="Password"/>
                                     <label htmlFor="floatingPassword">Password</label>
                                 </div>
 
-                                {/*<div className="form-floating mb-3">*/}
-                                {/*    <input type="password" className="form-control" id="floatingPasswordConfirm"*/}
-                                {/*           placeholder="Confirm Password"/>*/}
-                                {/*    <label htmlFor="floatingPasswordConfirm">Confirm Password</label>*/}
-                                {/*</div>*/}
-
                                 <div className="d-grid mb-2">
-                                    <button className="btn btn-lg btn-primary btn-login fw-bold text-uppercase"
+                                    <Button className="btn btn-lg btn-primary btn-login fw-bold text-uppercase"
                                             style={{marginTop: "30px"}}
-                                            type="submit">Login
-                                    </button>
+                                            type="submit"
+                                            onClick={() => {
+                                                loginAdmin().then((resp) => {
+                                                    if (resp.messageResponseType == MessageType.ERROR) {
+                                                        toast.error(`${resp.message}`, {
+                                                                position: "top-right",
+                                                                autoClose: 5000,
+                                                                hideProgressBar: false,
+                                                                closeOnClick: true,
+                                                                pauseOnHover: false,
+                                                                draggable: true,
+                                                                progress: undefined,
+                                                            }
+                                                        )
+                                                    } else {
+                                                        toast.success(`You logged in successfully!`, {
+                                                                position: "top-right",
+                                                                autoClose: 5000,
+                                                                hideProgressBar: false,
+                                                                closeOnClick: true,
+                                                                pauseOnHover: false,
+                                                                draggable: true,
+                                                                progress: undefined,
+                                                            }
+                                                        )
+                                                    }
+                                                }).catch((err) => {
+                                                    toast.warn(`Please check your username and password`, {
+                                                            position: "top-right",
+                                                            autoClose: 5000,
+                                                            hideProgressBar: false,
+                                                            closeOnClick: true,
+                                                            pauseOnHover: false,
+                                                            draggable: true,
+                                                            progress: undefined,
+                                                        }
+                                                    )
+                                                })
+                                            }}
+                                    >Login
+
+                                    </Button>
+
+                                    < ToastContainer
+                                        position="top-right"
+                                        autoClose={5000}
+                                        hideProgressBar={false}
+                                        newestOnTop
+                                        closeOnClick
+                                        rtl={false}
+                                        pauseOnFocusLoss={false}
+                                        draggable
+                                        pauseOnHover={false}
+                                    />
                                 </div>
 
-                                {/*<a className="d-block text-center mt-2 small" href="#">Have an account? Sign In</a>*/}
-
-                                {/*<hr className="my-4"/>*/}
-
-                                {/*<div className="d-grid mb-2">*/}
-                                {/*    <button className="btn btn-lg btn-google btn-login fw-bold text-uppercase"*/}
-                                {/*            type="submit">*/}
-                                {/*        <i className="fab fa-google me-2"></i> Sign up with Google*/}
-                                {/*    </button>*/}
-                                {/*</div>*/}
-
-                                {/*<div className="d-grid">*/}
-                                {/*    <button className="btn btn-lg btn-facebook btn-login fw-bold text-uppercase"*/}
-                                {/*            type="submit">*/}
-                                {/*        <i className="fab fa-facebook-f me-2"></i> Sign up with Facebook*/}
-                                {/*    </button>*/}
-                                {/*</div>*/}
 
                             </form>
                         </div>
@@ -70,6 +140,8 @@ function LoginPage() {
                 </div>
             </div>
         </div>
+        </body>
+
     );
 }
 
