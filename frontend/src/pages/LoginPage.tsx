@@ -1,5 +1,6 @@
 import './LoginPage.css';
 import React, {ChangeEvent, useState} from "react";
+import jwt from 'jwt-decode';
 import {LoginModel} from "../api/models/LoginModel";
 import {AuthAPI} from "../api/AuthAPI";
 import {Button} from "react-bootstrap";
@@ -80,7 +81,7 @@ function LoginPage() {
                                             type="submit"
                                             onClick={() => {
                                                 loginAdmin().then((resp) => {
-                                                    if (resp.messageResponseType == MessageType.ERROR) {
+                                                    if (resp.messageResponseType === MessageType.ERROR) {
                                                         toast.error(`${resp.message}`, {
                                                                 position: "top-right",
                                                                 autoClose: 5000,
@@ -92,9 +93,11 @@ function LoginPage() {
                                                             }
                                                         )
                                                     } else {
-                                                        toast.success(`You logged in successfully!`, {
+                                                        const admin = jwt(resp.token)
+                                                        // @ts-ignore
+                                                        toast.success(`You logged in as ${admin.sub} successfully!`, {
                                                                 position: "top-right",
-                                                                autoClose: 5000,
+                                                                autoClose: 1500,
                                                                 hideProgressBar: false,
                                                                 closeOnClick: true,
                                                                 pauseOnHover: false,
@@ -102,6 +105,10 @@ function LoginPage() {
                                                                 progress: undefined,
                                                             }
                                                         )
+                                                        setTimeout(() => {
+                                                            window.location.replace("/")
+                                                        }, 1500)
+
                                                     }
                                                 }).catch((err) => {
                                                     toast.warn(`Please check your username and password`, {
