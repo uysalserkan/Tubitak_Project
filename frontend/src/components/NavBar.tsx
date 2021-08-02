@@ -14,6 +14,7 @@ import {QRCodeAPI} from "../api/QRCodeAPI";
 import {toast} from "react-toastify";
 import LoginPage from "../pages/LoginPage";
 import {AuthAPI} from "../api/AuthAPI";
+import {AdminPage} from "../pages/AdminPage";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
@@ -49,33 +50,20 @@ function NavBar() {
                                 <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/custom-page">Custom</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/add-event">Add Event</Link>
-                                </li>
+
                                 <li className="nav-item dropdown">
-                                    {/*<a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"*/}
-                                    {/*   role="button" data-bs-toggle="dropdown" aria-expanded="false">*/}
-                                    {/*    Link*/}
-                                    {/*</a>*/}
                                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                         <li><Link className="dropdown-item" to="/registeredEvents">Bos Sayfaya
                                             git</Link></li>
-                                        {/*<li><a className="dropdown-item" href="#">Another action</a></li>*/}
                                         <li>
                                             <hr className="dropdown-divider"/>
                                         </li>
-                                        {/*<li><a className="dropdown-item" href="#">Something else here</a></li>*/}
                                     </ul>
                                 </li>
                                 <li className="nav-item">
-                                    {/*<a className="nav-link disabled" href="#" aria-disabled="true">Link</a>*/}
                                 </li>
                                 <Button className="position-absolute start-50 btn-success" hidden={!adminName}
                                         onClick={() => {
-                                            // <ToastFunct type="INFO" message="Bu bir info mesajıdır."/>
                                             setAddEventModalOpen(true);
                                         }
 
@@ -144,6 +132,9 @@ function NavBar() {
                                             aria-labelledby="navbarDarkDropdownMenuLink">
                                             <li><a className="dropdown-item" onClick={() => {
                                                 console.log("admin paneline gidiyoruz..")
+                                                setTimeout(() => {
+                                                    window.location.replace("/admin")
+                                                })
                                             }
                                             }>Admin</a></li>
                                             <hr/>
@@ -159,26 +150,15 @@ function NavBar() {
                                 }
                             </div>
 
-                            {/*<Button style={{marginLeft: "12px"}} onClick={() => {*/}
-                            {/*    if (adminName === "") {*/}
-                            {/*        window.location.replace("/login");*/}
-                            {/*    } else {*/}
-                            {/*        authAPI.logout()*/}
-                            {/*        setTimeout(() => {*/}
-                            {/*            window.location.reload()*/}
-                            {/*        }, 100)*/}
-                            {/*    }*/}
-                            {/*}}>{adminName === "" ? "Log in" : "Log out"}</Button>*/}
                         </div>
                     </div>
                 </Nav>
                 <div className="main-links">
-                    <Route path="/custom-page" exact={true} component={EventCard}/>
+                    <Route path="/admin" exact={true} component={AdminPage}/>
                     <Route path="/" exact={true} component={HomePage}/>
                     <Route path="/registeredEvents" exact={true} component={
                         () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
                     }/>
-                    <Route path="/add-event" exact={true} component={AddEvent}/>
                     <Route path="/login" exact={true} component={LoginPage}/>
 
                 </div>

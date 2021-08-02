@@ -1,6 +1,8 @@
 package al.uys.project_demo.User.models;
 
 import lombok.Getter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Set;

@@ -13,5 +13,7 @@ public interface QRCodeRepository extends JpaRepository<QRCode, Long> {
 
   QRCode getQRCodeByEventIdAndUserTcNo(Long eventId, String tcNo);
 
-  List<QRCode> getAllByUserTcNo(String tcNo);
+  List<QRCode> getAllByUserTcNoOrderByEventId(String tcNo);
+
+  void deleteQRCodeByUserTcNoAndEventId(String tcNo, Long id);
 }
