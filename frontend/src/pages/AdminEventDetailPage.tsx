@@ -7,8 +7,6 @@ import {Table} from "react-bootstrap";
 const qrCodeAPI = new QRCodeAPI();
 const eventAPI = new EventAPI();
 
-// TODO: filtreleme işlemleri burada yapılıyor fakat api üzerinden direkt olarak eventId ile tüm kullanıcıları getirebilirdik.
-
 
 function AdminEventDetailPage(props) {
     const [registeredUsers, setRegisteredUsers] = useState<QRCodeModel[]>([]);
