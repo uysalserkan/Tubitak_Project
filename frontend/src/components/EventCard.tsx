@@ -123,7 +123,7 @@ function EventCard(props) {
                 <Card.Footer>
                     <Row>
                         <Col>
-                            <Button variant="outline-primary" className="btn-lg" hidden={!adminName} onClick={() => {
+                            <Button variant="outline-primary" className="btn-lg" onClick={() => {
 
                                 setDetailModal(true);
 

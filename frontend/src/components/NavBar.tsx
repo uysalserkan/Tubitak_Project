@@ -15,6 +15,7 @@ import {toast} from "react-toastify";
 import LoginPage from "../pages/LoginPage";
 import {AuthAPI} from "../api/AuthAPI";
 import {AdminPage} from "../pages/AdminPage";
+import AdminEventDetailPage from "../pages/AdminEventDetailPage";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
@@ -160,6 +161,8 @@ function NavBar() {
                         () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
                     }/>
                     <Route path="/login" exact={true} component={LoginPage}/>
+                    <Route path="/admin/:eventId-:eventName" exact={true}
+                           render={(props) => <AdminEventDetailPage {...props}/>}/>
 
                 </div>
             </div>

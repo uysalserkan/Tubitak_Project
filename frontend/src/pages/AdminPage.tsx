@@ -1,14 +1,20 @@
 import {AuthAPI} from "../api/AuthAPI";
 import jwt from "jwt-decode";
 import {QRCodeAPI} from "../api/QRCodeAPI";
-import {EventAPI} from "../api/EventAPI";
+import {EventAPI, EventQueryResponse} from "../api/EventAPI";
 import React, {useMemo, useState} from "react";
 import {QRCodeModel} from "../api/models/QRCodeModel";
-
+import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import {Button, Table} from "react-bootstrap";
 import {toast, ToastContainer} from "react-toastify";
 import {MessageType} from "../dto/MessageResponse";
 import {AdminEventDetailsModal} from "../components/Modals/AdminEventDetailsModal";
+import {EventModel} from "../api/models/EventModel";
+import {useHistory} from "react-router-dom";
+
+import moment from "moment";
+import AdminEventDetailPage from "./AdminEventDetailPage";
+import Switch from "react-bootstrap/Switch";
 
 const authAPI = new AuthAPI();
 const qrCodeAPI = new QRCodeAPI();
@@ -26,12 +32,16 @@ try {
 
 
 export function AdminPage() {
-    const [registeredData, setRegisteredData] = useState<QRCodeModel[]>([]);
-    const [adminDetailsModalIsOpen, setAdminDetailsModalIsOpen] = useState(false);
+    // const [registeredData, setRegisteredData] = useState<QRCodeModel[]>([]);
+    const [activeEvents, setActiveEvents] = useState<EventQueryResponse[]>([]);
+    const inDate = (moment(new Date()).format("YYYY-MM-DD"))
+
+    let history = useHistory();
+
 
     useMemo(() => {
-        qrCodeAPI.getAll().then(data => {
-            setRegisteredData(data)
+        eventAPI.getEvent().then((resp) => {
+            setActiveEvents(resp)
         })
     }, [])
 
@@ -41,116 +51,72 @@ export function AdminPage() {
         className="d-flex flex-xl-wrap align-items-center align-middle"
         style={{marginLeft: "16px", marginTop: "16px", alignContent: "center"}}
     >
+
         <h1 className="text-primary"> ADMİN PAGE</h1>
-        <Table striped hover borderless variant="dark">
-            <caption>List of registered users</caption>
+
+
+        <Table striped hover borderless variant="dark" id="eventTable">
+            <caption>List of eventz</caption>
             <thead>
             <tr>
                 <th className="col-1"/>
+                <th>ID</th>
+                <th>Status</th>
                 <th>Event Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>T.C. Number</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Quota</th>
             </tr>
             </thead>
             <tbody>
-            {
-                registeredData
-                    .sort(
-                        // @ts-ignore
-                        (a, b) => {
-                            return (a.eventId >= b.eventId) ? a : b
-                        })
-                    .map(
-                        (each) => <tr key={`${each.eventId}_${each.userTcNo}`}>
-                            <td><Button
-                                onClick={() => {
-                                    // TODO: Burada map ile dğeil de route olarak details sayfasına bakılacak.
-                                    console.log(each.eventName, each.eventId)
-                                    setAdminDetailsModalIsOpen(true)
 
-                                }}
-                            >Details</Button>
-                                <AdminEventDetailsModal
-                                    isOpen={adminDetailsModalIsOpen}
-                                    handleClose={() => setAdminDetailsModalIsOpen(false)}
-                                    eventId={each.eventId}
-                                    eventName={each.eventName}
-                                />
-                            </td>
+            {
+                activeEvents
+                    // @ts-ignore
+                    .sort((a, b) => {
+                        if (a.id > b.id) {
+                            return 1;
+                        } else if (a.id < b.id) {
+                            return -1;
+                        }
+                        return 0;
+                    })
+                    // .filter(each => {
+                    //         return each.endDate > inDate
+                    //     }
+                    // )
+                    .map(each =>
+                        <tr key={each.id}>
+
+                            <td>
+                                <Link
+                                    className="btn btn-primary"
+                                    to={`/admin/${each.id}-${each.eventName}`}
+                                    target={"_blank"}
+                                >Details</Link></td>
+
+                            <td>{each.id}</td>
+                            <td>{
+                                each.startDate < inDate ? (
+                                        each.endDate > inDate ?
+                                            <h5><span className="badge bg-success">Live</span></h5> :
+                                            <h5><span className="badge bg-danger">Passed</span></h5>
+                                    )
+                                    :
+                                    <h5><span className="badge bg-light text-black-50">Comming</span></h5>
+                            }</td>
                             <td>{each.eventName}</td>
-                            <td>{each.firstName}</td>
-                            <td>{each.lastName}</td>
-                            <td>{each.userTcNo}</td>
-                            {/*<td><Button variant="danger" onClick={() => {*/}
-                            {/*    qrCodeAPI.deleteByTcNoAndEventId(each.userTcNo, each.eventId).then((response) => {*/}
-                            {/*        if (response.messageResponseType === MessageType.SUCCESS) {*/}
-                            {/*            toast.success(`${response.message}`, {*/}
-                            {/*                    position: "top-right",*/}
-                            {/*                    autoClose: 5000,*/}
-                            {/*                    hideProgressBar: false,*/}
-                            {/*                    closeOnClick: true,*/}
-                            {/*                    pauseOnHover: false,*/}
-                            {/*                    draggable: true,*/}
-                            {/*                    progress: undefined,*/}
-                            {/*                }*/}
-                            {/*            )*/}
-                            {/*        } else {*/}
-                            {/*            toast.warn(`${response.message}`, {*/}
-                            {/*                    position: "top-right",*/}
-                            {/*                    autoClose: 5000,*/}
-                            {/*                    hideProgressBar: false,*/}
-                            {/*                    closeOnClick: true,*/}
-                            {/*                    pauseOnHover: false,*/}
-                            {/*                    draggable: true,*/}
-                            {/*                    progress: undefined,*/}
-                            {/*                }*/}
-                            {/*            )*/}
-                            {/*        }*/}
-                            {/*    }).catch((err) => {*/}
-                            {/*        toast.error(`${err}`, {*/}
-                            {/*                position: "top-right",*/}
-                            {/*                autoClose: 5000,*/}
-                            {/*                hideProgressBar: false,*/}
-                            {/*                closeOnClick: true,*/}
-                            {/*                pauseOnHover: false,*/}
-                            {/*                draggable: true,*/}
-                            {/*                progress: undefined,*/}
-                            {/*            }*/}
-                            {/*        )*/}
-                            {/*    })*/}
-                            {/*}*/}
-                            {/*}>Remove</Button></td>*/}
-                            < ToastContainer
-                                position="top-right"
-                                autoClose={5000}
-                                hideProgressBar={false}
-                                newestOnTop
-                                closeOnClick
-                                rtl={false}
-                                pauseOnFocusLoss={false}
-                                draggable
-                                pauseOnHover={false}
-                            />
+                            <td>{each.startDate}</td>
+                            <td>{each.endDate}</td>
+                            <td>{each.quota}</td>
                         </tr>
                     )
+
             }
             </tbody>
 
         </Table>
 
-        {/*<BootstrapTable*/}
-        {/*    className="table-dark"*/}
-        {/*    bootstrap4*/}
-        {/*    keyField="-"*/}
-        {/*    data={registeredData}*/}
-        {/*    columns={columns}*/}
-        {/*    pagination={paginationFactory({sizePerPage: 5})}*/}
-        {/*/>*/}
-        {/*{*/}
-        {/*    registeredData.map(each => {*/}
-        {/*        console.log(each)*/}
-        {/*    })*/}
-        {/*}*/}
-    </div>;
+    </div>
+        ;
 }
