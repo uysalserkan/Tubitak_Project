@@ -2,7 +2,7 @@ import {AuthAPI} from "../api/AuthAPI";
 import jwt from "jwt-decode";
 import {QRCodeAPI} from "../api/QRCodeAPI";
 import {EventAPI, EventQueryResponse} from "../api/EventAPI";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {QRCodeModel} from "../api/models/QRCodeModel";
 import {BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import {Col, Row, Table} from "react-bootstrap";
@@ -24,102 +24,8 @@ try {
 }
 
 
-let eventData = [{}];
+let eventData = [];
 
-
-// function getEventAttendees(event: EventQueryResponse[]) {
-//     event.forEach(each => {
-//         qrCodeAPI.getAll().then((resp) => {
-//             resp.forEach((each_resp) => {
-//                 if (each_resp.eventId == each.id) {
-//                     // eventData.indexOf(each.id)[0] += 1
-//                 }
-//             })
-//         }).catch((err) => {
-//         })
-//         // eventData.push({id: each.id, eventName: each.eventName, userCounter: userCounter})
-//     })
-// }
-
-
-const data = [
-    {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-    },
-    {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-    },
-    {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-    },
-    {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-    },
-    {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    }, {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    }, {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    },
-];
 
 export function AdminPage() {
     const [activeEvents, setActiveEvents] = useState<EventQueryResponse[]>([]);
@@ -127,46 +33,50 @@ export function AdminPage() {
     const inDate = (moment(new Date()).format("YYYY-MM-DD"))
 
 
-    useMemo(() => {
+    useEffect(() => {
+
+        eventAPI.getEvent().then(r => {
+            setActiveEvents(r)
+
+        })
         qrCodeAPI.getAll().then((resp) => {
             setQRCodes(resp)
 
         })
-        eventAPI.getEvent().then((resp) => {
-            // ! 2 kere çalışıyor.
-            setActiveEvents(resp)
-            initializeEventData(resp)
-            // getEventAttendees(resp)
-        })
+
 
     }, [])
 
-    function initializeEventData(event: EventQueryResponse[]) {
-        if (eventData.length < event.length) {
-            console.log("BU FONKSIYON KAÇ KERE ÇALIŞIYOR.")
-            event.forEach(each => {
-                if (eventData.indexOf({id: each.id, eventName: each.eventName, userCounter: 0}) === -1) {
-                    eventData.push({id: each.id, eventName: each.eventName, userCounter: 0})
-                } else {
-                    console.log("BU ELEMENT ZATEN VAR..")
-                }
-            })
-            getEventAttendees()
-        }
-    }
-
     function getEventAttendees() {
-        eventData.forEach(eventEach => {
+
+        eventData.forEach((eventEach) => {
             qrCodes.forEach((qrEach) => {
                 // @ts-ignore
-                if (qrEach.eventId === eventEach.id) {
+                if (qrEach.eventId === eventEach.eventId) {
                     // @ts-ignore
                     eventEach.userCounter++;
                 }
             })
         })
 
+
     }
+
+    function initializeEventData() {
+        if (eventData.length <= activeEvents.length && qrCodes.length > 0) {
+            eventData = []
+            activeEvents.forEach(each => {
+                // @ts-ignore
+                eventData.push({eventId: each.id, eventName: each.eventName as string, userCounter: 0})
+
+
+            })
+            getEventAttendees()
+        }
+    }
+
+    initializeEventData()
+
 
     return adminName === "" ? setTimeout(() => {
             window.location.replace("/")
@@ -191,12 +101,7 @@ export function AdminPage() {
                             XKey="eventName"
                             barKey="userCounter"
                         />
-                        {/*<BarChart width={1800} height={500} data={eventData}>*/}
-                        {/*    <XAxis dataKey="eventName" stroke="#8884d8"/>*/}
-                        {/*    <YAxis/>*/}
-                        {/*    <Tooltip/>*/}
-                        {/*    <Bar dataKey="userCounter" fill="#8884d8" barSize={50}/>*/}
-                        {/*</BarChart>*/}
+
                     </Col>
                 </Row>
             </div>

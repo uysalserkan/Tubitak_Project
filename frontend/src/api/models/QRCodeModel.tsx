@@ -4,4 +4,5 @@ export interface QRCodeModel {
     firstName: String;
     lastName: String;
     userTcNo: String;
+    creationDate: String
 }
