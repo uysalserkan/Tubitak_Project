@@ -23,7 +23,8 @@ const initialQRCode: QRCodeModel = {
     eventName: "",
     firstName: "",
     lastName: "",
-    userTcNo: ""
+    userTcNo: "",
+    creationDate: "25.11.1998"
 }
 
 function EventCard(props) {
