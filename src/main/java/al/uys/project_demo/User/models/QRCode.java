@@ -2,8 +2,10 @@ package al.uys.project_demo.User.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -20,6 +22,8 @@ public class QRCode {
   private String lastName;
 
   private String userTcNo;
+
+  @CreationTimestamp private LocalDate creationDate;
 
   public QRCode(
       Long eventId, String eventName, String firstName, String lastName, String userTcNo) {

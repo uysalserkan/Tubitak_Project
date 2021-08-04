@@ -147,13 +147,36 @@ public class QRCodeService {
           "Sorry, user cannot found with %s T.C. number".formatted(tcno),
           MessageResponseType.ERROR);
     } else {
-      List<QRCode> qrCodeList = qrCodeRepository.getAllByUserTcNo(tcno);
+      List<QRCode> qrCodeList = qrCodeRepository.getAllByUserTcNoOrderByEventId(tcno);
       List<EventResponse> eventResponseList = new ArrayList<>();
       for (QRCode code : qrCodeList) {
         eventResponseList.add(eventService.getEvent(code.getEventId()));
       }
 
       return eventResponseList;
+    }
+  }
+
+  public List<QRCodeResponse> getAllRegisteredEvents() {
+    List<QRCode> data = qrCodeRepository.findAll();
+    List<QRCodeResponse> returned_data = new ArrayList<>();
+    for (QRCode each : data) {
+      returned_data.add(new QRCodeResponse(each));
+    }
+
+    return returned_data;
+  }
+
+  public MessageResponse deleteQRCodeWithTCNoAndEventId(String tcno, Long eventid) {
+    if (!qrCodeRepository.existsByUserTcNo(tcno)) {
+      return new MessageResponse(
+          "Sorry, user cannot found with %s T.C. number".formatted(tcno),
+          MessageResponseType.ERROR);
+    } else if (!qrCodeRepository.existsByUserTcNoAndEventId(tcno, eventid)) {
+      return new MessageResponse("User is not registered this event", MessageResponseType.ERROR);
+    } else {
+      qrCodeRepository.deleteQRCodeByUserTcNoAndEventId(tcno, eventid);
+      return new MessageResponse("The user is removed from event", MessageResponseType.SUCCESS);
     }
   }
 }

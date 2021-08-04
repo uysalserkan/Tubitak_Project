@@ -1,4 +1,18 @@
 import {Button, Col, Modal, Row} from "react-bootstrap";
+import {AuthAPI} from "../../api/AuthAPI";
+import jwt from "jwt-decode";
+
+const authAPI = new AuthAPI();
+
+let adminName;
+try {
+
+    // @ts-ignore
+    adminName = jwt(authAPI.getToken()).sub;
+} catch (e) {
+
+    adminName = "";
+}
 
 function EventDetailModal(props) {
 
@@ -40,6 +54,7 @@ function EventDetailModal(props) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary"
+                        hidden={!adminName}
                         onClick={() => {
                             props.setIsUpdateEventModalOpen(true);
                             props.handleClose();

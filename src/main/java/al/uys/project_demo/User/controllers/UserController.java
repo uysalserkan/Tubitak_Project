@@ -4,6 +4,7 @@ import al.uys.project_demo.Commons.MessageResponse;
 import al.uys.project_demo.User.controllers.request.AddUserRequest;
 import al.uys.project_demo.User.controllers.response.UserResponse;
 import al.uys.project_demo.User.services.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -47,6 +48,7 @@ public class UserController {
   }
 
   @GetMapping()
+  @PreAuthorize("hasRole('ADMIN')")
   public List<UserResponse> getAllUsers() {
     return userService.getAllUsers();
   }

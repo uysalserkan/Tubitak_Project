@@ -9,6 +9,8 @@ import QRCodeModal from "./Modals/QRCodeModals";
 import {UserModel} from "../api/models/UserModel";
 import UpdateEventModal from "./Modals/UpdateEventModal";
 import {QRCodeModel} from "../api/models/QRCodeModel";
+import {AuthAPI} from "../api/AuthAPI";
+import jwt from "jwt-decode";
 
 const initialUserState: UserModel = {
     tcNo: "",
@@ -21,10 +23,24 @@ const initialQRCode: QRCodeModel = {
     eventName: "",
     firstName: "",
     lastName: "",
-    userTcNo: ""
+    userTcNo: "",
+    creationDate: "25.11.1998"
 }
 
 function EventCard(props) {
+    const authAPI = new AuthAPI();
+
+    let adminName;
+    try {
+
+        // @ts-ignore
+        adminName = jwt(authAPI.getToken()).sub;
+    } catch (e) {
+
+        adminName = "";
+    }
+
+
     const [qrCodeModel, setQrCodeModel] = useState(initialQRCode)
     const [isRegisterModalOpen, setRegisterModal] = useState(false);
     const [isDetailModalOpen, setDetailModal] = useState(false);
@@ -60,7 +76,7 @@ function EventCard(props) {
                             <strong> {props.eventCategory}</strong>
                         </Col>
                         <Col className="col-lg-3 ">
-                            <Button className="btn-sm " variant="outline-danger"
+                            <Button className="btn-sm " variant="outline-danger" hidden={!adminName}
                                     onClick={() => {
                                         setDeleteEventModal(true);
                                     }}>Delete</Button>
@@ -173,18 +189,18 @@ function EventCard(props) {
                         </Col>
                     </Row>
                 </Card.Footer>
+                < ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss={false}
+                    draggable
+                    pauseOnHover={false}
+                />
             </Card>
-            < ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable
-                pauseOnHover={false}
-            />
         </div>
 
     )

@@ -5,18 +5,35 @@ import EventCard from "./EventCard";
 import RegisteredEventsPage from "../pages/RegisteredEventsPage";
 import AddEvent from "../pages/AddEvent";
 import HomePage from "../pages/HomePage";
+import jwt from "jwt-decode";
 
 import 'react-toastify/dist/ReactToastify.css';
 import AddEventModal from "./Modals/AddEventModal";
 import {EventQueryResponse} from "../api/EventAPI";
 import {QRCodeAPI} from "../api/QRCodeAPI";
 import {toast} from "react-toastify";
+import LoginPage from "../pages/LoginPage";
+import {AuthAPI} from "../api/AuthAPI";
+import {AdminPage} from "../pages/AdminPage";
+import AdminEventDetailPage from "../pages/AdminEventDetailPage";
 
 function NavBar() {
     const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
     const [searchedTCNo, serSearchedTCNo] = useState("");
     const [registeredEvents, setRegisteredEvents] = useState<EventQueryResponse[]>([]);
     const qrCodeAPI = new QRCodeAPI();
+
+    const authAPI = new AuthAPI();
+
+    let adminName;
+    try {
+
+        // @ts-ignore
+        adminName = jwt(authAPI.getToken()).sub;
+    } catch (e) {
+
+        adminName = "";
+    }
 
     return (
         <Router>
@@ -34,36 +51,24 @@ function NavBar() {
                                 <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/custom-page">Custom</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/add-event">Add Event</Link>
-                                </li>
+
                                 <li className="nav-item dropdown">
-                                    {/*<a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"*/}
-                                    {/*   role="button" data-bs-toggle="dropdown" aria-expanded="false">*/}
-                                    {/*    Link*/}
-                                    {/*</a>*/}
                                     <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                         <li><Link className="dropdown-item" to="/registeredEvents">Bos Sayfaya
                                             git</Link></li>
-                                        {/*<li><a className="dropdown-item" href="#">Another action</a></li>*/}
                                         <li>
                                             <hr className="dropdown-divider"/>
                                         </li>
-                                        {/*<li><a className="dropdown-item" href="#">Something else here</a></li>*/}
                                     </ul>
                                 </li>
                                 <li className="nav-item">
-                                    {/*<a className="nav-link disabled" href="#" aria-disabled="true">Link</a>*/}
                                 </li>
-                                <Button className="position-absolute start-50 btn-success" onClick={() => {
-                                    // <ToastFunct type="INFO" message="Bu bir info mesajıdır."/>
-                                    setAddEventModalOpen(true);
-                                }
+                                <Button className="position-absolute start-50 btn-success" hidden={!adminName}
+                                        onClick={() => {
+                                            setAddEventModalOpen(true);
+                                        }
 
-                                }> Add Event</Button>
+                                        }> Add Event</Button>
                                 <AddEventModal
                                     isOpen={isAddEventModalOpen}
                                     handleClose={() => setAddEventModalOpen(false)}
@@ -72,7 +77,6 @@ function NavBar() {
                             </ul>
                             <Form className="d-flex" onSubmit={(e) => {
                                 e.preventDefault();
-                                console.log(e.target)
                             }}>
                                 <FormControl className=" me-2"
                                              type="text"
@@ -115,16 +119,51 @@ function NavBar() {
 
                                 }}>Search</Link>
                             </Form>
+                            <div style={{marginLeft: "12px", marginRight: "10px"}}>
+                                {
+                                    adminName === "" ? <Button onClick={() => {
+                                        window.location.replace("/login");
+                                    }}> Log in</Button> : <li className="nav-item dropdown">
+                                        <button className="btn btn-secondary dropdown-toggle" type="button"
+                                                id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            Control Panel
+                                        </button>
+                                        <ul className="dropdown-menu dropdown-menu-dark"
+                                            aria-labelledby="navbarDarkDropdownMenuLink">
+                                            <li><a className="dropdown-item" onClick={() => {
+                                                console.log("admin paneline gidiyoruz..")
+                                                setTimeout(() => {
+                                                    window.location.replace("/admin")
+                                                })
+                                            }
+                                            }>Admin</a></li>
+                                            <hr/>
+                                            <li><a className="dropdown-item" onClick={() => {
+                                                authAPI.logout()
+                                                setTimeout(() => {
+                                                    window.location.reload()
+                                                }, 100)
+                                            }
+                                            }>Log out</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            </div>
+
                         </div>
                     </div>
                 </Nav>
                 <div className="main-links">
-                    <Route path="/custom-page" exact={true} component={EventCard}/>
+                    <Route path="/admin" exact={true} component={AdminPage}/>
                     <Route path="/" exact={true} component={HomePage}/>
                     <Route path="/registeredEvents" exact={true} component={
                         () => <RegisteredEventsPage registeredEvents={registeredEvents}/>
                     }/>
-                    <Route path="/add-event" exact={true} component={AddEvent}/>
+                    <Route path="/login" exact={true} component={LoginPage}/>
+                    <Route path="/admin/:eventId-:eventName" exact={true}
+                           render={(props) => <AdminEventDetailPage {...props}/>}/>
+
                 </div>
             </div>
         </Router>
