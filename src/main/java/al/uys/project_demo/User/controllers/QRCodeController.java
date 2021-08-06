@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/qrcode")
+@RequestMapping(value = "/qrcode", produces = "application/json;charset=utf-8")
 public class QRCodeController {
   private final QRCodeService qrCodeService;
 
