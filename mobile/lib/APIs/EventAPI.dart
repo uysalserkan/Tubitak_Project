@@ -11,7 +11,7 @@ class EventAPI {
 
     Response resp = await get(Uri.parse('http://10.0.2.2:8080/events'));
     List<EventModel> events = List<EventModel>.generate(
-        999,
+        0,
         (index) => new EventModel(
             eventId: 0,
             eventName: "",
@@ -41,9 +41,7 @@ class EventAPI {
         }
       }
     }
-    for (int i = 0; i < events.length; i++) {
-      print(events[i].eventCategory);
-    }
+
     return events;
   }
 
@@ -53,8 +51,6 @@ class EventAPI {
 
     if (resp.statusCode == 200) {
       final obj = jsonDecode(resp.body);
-      print("obj");
-      print(obj);
       return new EventModel(
           eventId: obj['id'],
           eventName: obj['eventName'],
@@ -71,7 +67,7 @@ class EventAPI {
   }
 }
 
-/* 
+/*
  * 1: 205473
  * 2: bf240f
  * 3: 609491
