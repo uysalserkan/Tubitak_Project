@@ -32,4 +32,13 @@ class QRCodeModel {
       creationDate: json["creationDate"],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'firstName': firstName,
+        'lastName': lastName,
+        'tcNo': userTcNo,
+        'eventId': eventId,
+        'eventName': eventName,
+        'creationDate': creationDate,
+      };
 }

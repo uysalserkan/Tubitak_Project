@@ -1,4 +1,3 @@
-import 'package:mobile/helpers/MessageResponseTypes.dart';
 
 class MessageResponse {
   final message;

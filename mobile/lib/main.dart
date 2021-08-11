@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/APIs/EventAPI.dart';
-import 'package:mobile/models/EventModel.dart';
 import 'package:mobile/widgets/Homepage.dart';
+import 'package:mobile/widgets/SearchRegisteredDialogBox.dart';
 
 EventAPI eventAPI = new EventAPI();
 
@@ -33,28 +33,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: true,
         leading: OutlinedButton(
           onPressed: () {
-            print("buraya basıldığında QR tarama ekranı gelecek");
+            // QR Code Scanner
           },
           child: Icon(
             Icons.camera,
             color: Colors.white70,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SearchRegisteredDialogBox();
+                  });
+            },
+            icon: Icon(Icons.list_alt_outlined),
+          )
+        ],
       ),
       body: Homepage(
         events: eventAPI.getEvents(),

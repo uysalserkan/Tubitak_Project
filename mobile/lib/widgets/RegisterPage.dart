@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/helpers/MessageResponse.dart';
 import 'package:mobile/models/QRCodeModel.dart';
 import 'package:mobile/models/UserModel.dart';
 import 'package:mobile/widgets/QRCodePage.dart';
+import 'package:mobile/APIs/QRCodeAPI.dart';
+
 import '../APIs/UserAPI.dart';
 
 var isRegistered = false;
@@ -25,7 +28,42 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => _RegisterPageState();
 }
 
+// void xxclearSectors() {
+//   tcValid = true;
+//   lastNameController.text = "";
+//   firstNameController.text = "";
+//   tcNoController.text = "";
+//   user = UserModel();
+// }
+
 class _RegisterPageState extends State<RegisterPage> {
+  final qrCodeAPI = new QRCodeAPI();
+  QRCodeModel qrCodeModel = new QRCodeModel(
+    creationDate: "",
+    eventId: "",
+    eventName: "",
+    firstName: "",
+    lastName: "",
+    userTcNo: "",
+  );
+
+  Future<void> clearSectors() async {
+    setState(() {
+      lastNameController.text = "";
+      firstNameController.text = "";
+      tcNoController.text = "";
+      user = UserModel();
+    });
+  }
+
+  Future<void> clearNames() async {
+    setState(() {
+      lastNameController.text = "";
+      firstNameController.text = "";
+      user = UserModel();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            tcValid = false;
-            lastNameController.text = "";
-            firstNameController.text = "";
-            tcNoController.text = "";
-            user = UserModel();
+            clearSectors();
             Navigator.pop(context);
           },
         ),
@@ -125,11 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      tcValid = false;
-                      lastNameController.text = "";
-                      firstNameController.text = "";
-                      tcNoController.text = "";
-                      user = UserModel();
+                      clearSectors();
                       Navigator.pop(context);
                     },
                     child: Text("Cancel"),
@@ -143,7 +173,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                       if (userTcNo == null || userTcNo.length < 11) {
                         setState(() {
-                          tcValid = false;
+                          clearSectors();
                         });
                       } else {
                         userAPI.getUser(userTcNo).then(
@@ -152,29 +182,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                     value.lastName != null &&
                                     value.tcNo != null)
                                   {
-                                    setState(
-                                      () {
-                                        user = value;
-                                        tcValid = true;
-                                        isRegistered = true;
-                                        firstNameController.text =
-                                            value.firstName;
-                                        lastNameController.text =
-                                            value.lastName;
-                                        tcNoController.text = value.tcNo;
-                                      },
-                                    )
+                                    setState(() {
+                                      user = value;
+                                      tcValid = true;
+                                      isRegistered = true;
+                                      firstNameController.text =
+                                          value.firstName;
+                                      lastNameController.text = value.lastName;
+                                      tcNoController.text = value.tcNo;
+                                    }),
                                   }
                                 else
                                   {
                                     setState(
                                       () {
-                                        user = new UserModel();
                                         isRegistered = false;
                                         tcValid = true;
-                                        firstNameController.text = "";
-                                        lastNameController.text = "";
-                                        tcNoController.text = "";
+                                        clearNames();
+                                        // clearSectors();
                                       },
                                     )
                                   }
@@ -189,35 +214,51 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  // if (tcValid && isRegistered && user != null)
-                  //   ElevatedButton(
-                  //     onPressed: () {},
-                  //     child: Text("Get QRCode"),
-                  //     style: ButtonStyle(
-                  //       backgroundColor: MaterialStateProperty.all(
-                  //         Colors.blueAccent,
-                  //       ),
-                  //     ),
-                  //   )
-                  // else
                   if (tcValid
                       // && !isRegistered
                       &&
                       user != null)
                     ElevatedButton(
                       onPressed: () {
-                        var xyz = userAPI.registerUserToEvent(
-                            widget.event.eventId, user);
-                        print("xyz");
-                        print(xyz);
-                        print("xyz.message");
-                        print(xyz.asStream().first);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return QRCOdePage(
-                            qrCode: new QRCodeModel(),
-                          );
-                        }));
+                        MessageResponse returnMessage = new MessageResponse(
+                            message: "", messageResponseType: "");
+                        userAPI
+                            .registerUserToEvent(widget.event.eventId, user)
+                            .then((value) => {
+                                  returnMessage = value,
+                                });
+
+                        // print("returnMessage");
+                        // print(returnMessage);
+                        // // print(returnMessage.asStream());
+                        // returnMessage.map((event) => {
+                        //       print("event"),
+                        //       print(event),
+                        //       returnMessage = event,
+                        //     });
+
+                        // print("returnMessage::::");
+                        // print(returnMessage.message);
+                        var response = qrCodeAPI.getQRCode(
+                          widget.event.eventId.toString(),
+                          tcNoController.text,
+                        );
+                        response.then((value) =>
+                            {qrCodeModel = value, print(qrCodeModel)});
+
+                        Future.delayed(Duration(milliseconds: 300), () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return QRCOdePage(
+                              qrCode: new QRCodeModel(),
+                              clearSectors: clearSectors,
+                              eventId: widget.event.eventId,
+                              tcNo: tcNoController.text,
+                              messageResponse: returnMessage,
+                              qrData: qrCodeModel,
+                            );
+                          }));
+                        });
                       },
                       child: Text("Register"),
                       style: ButtonStyle(
