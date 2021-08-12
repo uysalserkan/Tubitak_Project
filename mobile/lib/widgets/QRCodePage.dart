@@ -1,10 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/helpers/MessageResponse.dart';
 import 'package:mobile/models/QRCodeModel.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 Future<String> getQRData(QRCodeModel model) async {
   print("QRDATAGET:::");
@@ -38,6 +45,8 @@ class QRCOdePage extends StatefulWidget {
 }
 
 class _QRCOdePageState extends State<QRCOdePage> {
+  final qrKey = GlobalKey();
+  File? file;
   // final qrCodeAPI = new QRCodeAPI();
   // QRCodeModel qrCodeModel = new QRCodeModel(
   //   creationDate: "",
@@ -115,19 +124,49 @@ class _QRCOdePageState extends State<QRCOdePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            QrImage(
-              // data: "${widget.qrData.toJson()}",
-              data: "${jsonEncode(widget.qrData)}",
-              size: 256,
+            RepaintBoundary(
+              key: qrKey,
+              child: QrImage(
+                // data: "${widget.qrData.toJson()}",
+                data: "${jsonEncode(widget.qrData)}",
+                size: 256,
+              ),
             ),
             ElevatedButton(
               child: Text('Save QR Code'),
-              onPressed: () {
+              onPressed: () async {
                 widget.clearSectors();
+                print("saving qr code");
+                try {
+                  RenderRepaintBoundary boundary = qrKey.currentContext!
+                      .findRenderObject() as RenderRepaintBoundary;
+
+                  var image = await boundary.toImage();
+
+                  ByteData? byteData =
+                      await image.toByteData(format: ImageByteFormat.png);
+
+                  Uint8List pngBytes = byteData!.buffer.asUint8List();
+                  final appDir = await getApplicationDocumentsDirectory();
+                  var datetime = new DateTime.now();
+
+                  file = await File("${appDir.path}/$datetime.png").create();
+                  await file?.writeAsBytes(pngBytes);
+
+                  await Share.shareFiles(
+                    [file!.path],
+                    mimeTypes: ["image/png"],
+                    text: "Share the QR Code",
+                  );
+                } catch (e) {
+                  print("::e::");
+                  print(e);
+                }
                 // Navigator.pop(context);
                 // Navigator.popUntil(context, (route) => route.isFirst);
               },
-            )
+            ),
+            ElevatedButton(onPressed: () {}, child: Text("Add Remainder"))
           ],
         ),
       ),

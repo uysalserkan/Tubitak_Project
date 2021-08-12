@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/APIs/EventAPI.dart';
 import 'package:mobile/widgets/Homepage.dart';
+import 'package:mobile/widgets/ScanQRCodePage.dart';
 import 'package:mobile/widgets/SearchRegisteredDialogBox.dart';
 
 EventAPI eventAPI = new EventAPI();
@@ -42,6 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
         leading: OutlinedButton(
           onPressed: () {
             // QR Code Scanner
+            print("QRCode Scanner opened");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return ScanQRCodePage();
+              }),
+            );
           },
           child: Icon(
             Icons.camera,
