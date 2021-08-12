@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/users")
+@RequestMapping(value="/users", produces = "application/json;charset=utf-8")
 public class UserController {
   private final UserService userService;
 

@@ -25,7 +25,7 @@ import java.util.HashSet;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth", produces = "application/json;charset=utf-8")
 public class AuthController {
   String ROLE_PREFIX = "ROLE_";
 

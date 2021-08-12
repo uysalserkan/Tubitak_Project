@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "events")
+@RequestMapping(value = "events", produces = "application/json;charset=utf-8")
 @Validated
 public class EventController {
 
