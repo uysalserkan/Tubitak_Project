@@ -92,8 +92,11 @@ class _QRCOdePageState extends State<QRCOdePage> {
 
     // print(jsonEncode(qrCodeModel));
 
-    print("qrData");
-    print(widget.qrData);
+    // print("qrData");
+    // print(widget.qrData);
+    // print(widget.qrData.eventName);
+    // print(widget.qrData.firstName);
+    // print(widget.qrData.userTcNo);
 
     return Scaffold(
       appBar: AppBar(

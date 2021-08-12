@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/helpers/MessageResponse.dart';
@@ -13,8 +15,10 @@ var firstname;
 var lastname;
 var userTcNo;
 var tcValid = true;
+var firstNameValid = true;
+var lastNameValid = true;
 final userAPI = new UserAPI();
-var user;
+UserModel user = new UserModel();
 TextEditingController firstNameController = new TextEditingController();
 TextEditingController lastNameController = new TextEditingController();
 TextEditingController tcNoController = new TextEditingController();
@@ -137,6 +141,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelStyle: TextStyle(
                     fontSize: 18,
                   ),
+                  errorText:
+                      firstNameValid == true ? null : "Invalid First Name",
                   hintText: "Serkan", // ZSo<3
                   icon: Icon(Icons.first_page),
                 ),
@@ -150,6 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelStyle: TextStyle(
                     fontSize: 18,
                   ),
+                  errorText: lastNameValid == true ? null : "Invalid Last Name",
                   hintText: "UYSAL", // 25o<3ZS
                   icon: Icon(Icons.last_page),
                 ),
@@ -173,6 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                       if (userTcNo == null || userTcNo.length < 11) {
                         setState(() {
+                          tcValid = false;
                           clearSectors();
                         });
                       } else {
@@ -183,7 +191,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     value.tcNo != null)
                                   {
                                     setState(() {
-                                      user = value;
+                                      user = new UserModel(
+                                          firstName: value.firstName,
+                                          lastName: value.lastName,
+                                          tcNo: value.tcNo);
                                       tcValid = true;
                                       isRegistered = true;
                                       firstNameController.text =
@@ -217,48 +228,112 @@ class _RegisterPageState extends State<RegisterPage> {
                   if (tcValid
                       // && !isRegistered
                       &&
-                      user != null)
+                      user != new UserModel())
                     ElevatedButton(
                       onPressed: () {
-                        MessageResponse returnMessage = new MessageResponse(
-                            message: "", messageResponseType: "");
-                        userAPI
-                            .registerUserToEvent(widget.event.eventId, user)
-                            .then((value) => {
-                                  returnMessage = value,
-                                });
+                        if (firstNameController.text.length < 3) {
+                          setState(() {
+                            firstNameValid = false;
+                          });
+                        } else if (lastNameController.text.length < 3) {
+                          setState(() {
+                            lastNameValid = false;
+                          });
+                        } else {
+                          user = new UserModel(
+                            firstName: firstNameController.text,
+                            lastName: lastNameController.text,
+                            tcNo: userTcNo,
+                          );
+                          userAPI.createUser(user).then((value) => {
+                                // print("Register user in register page:::"),
+                                // print(value),
+                                // print(value.message),
+                                // print(value.messageResponseType),
+                              });
 
-                        // print("returnMessage");
-                        // print(returnMessage);
-                        // // print(returnMessage.asStream());
-                        // returnMessage.map((event) => {
-                        //       print("event"),
-                        //       print(event),
-                        //       returnMessage = event,
-                        //     });
+                          Timer(Duration(milliseconds: 10), () {
+                            MessageResponse returnMessage = new MessageResponse(
+                                message: "", messageResponseType: "");
+                            userAPI
+                                .registerUserToEvent(widget.event.eventId, user)
+                                .then((value) => {
+                                      returnMessage = value,
+                                      // print("value"),
+                                      // print(value),
+                                      // print(value.message),
+                                      // print(value.messageResponseType),
+                                    })
+                                .catchError((err) {
+                              print("HATA:::");
+                              print(err);
+                              print("user");
+                              print(user.firstName);
+                              print(user.lastName);
+                              print(user.tcNo);
+                            });
 
-                        // print("returnMessage::::");
-                        // print(returnMessage.message);
-                        var response = qrCodeAPI.getQRCode(
-                          widget.event.eventId.toString(),
-                          tcNoController.text,
-                        );
-                        response.then((value) =>
-                            {qrCodeModel = value, print(qrCodeModel)});
+                            // print("returnMessage");
+                            // print(returnMessage);
+                            // print(returnMessage.message);
+                            // print(returnMessage.messageResponseType);
+                            // // print(returnMessage.asStream());
+                            // returnMessage.map((event) => {
+                            //       print("event"),
+                            //       print(event),
+                            //       returnMessage = event,
+                            //     });
 
-                        Future.delayed(Duration(milliseconds: 300), () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return QRCOdePage(
-                              qrCode: new QRCodeModel(),
-                              clearSectors: clearSectors,
-                              eventId: widget.event.eventId,
-                              tcNo: tcNoController.text,
-                              messageResponse: returnMessage,
-                              qrData: qrCodeModel,
-                            );
-                          }));
-                        });
+                            // print("returnMessage::::");
+                            // print(returnMessage.message);
+                            Timer(Duration(milliseconds: 250), () {
+                              qrCodeAPI
+                                  .getQRCode(
+                                    widget.event.eventId.toString(),
+                                    tcNoController.text,
+                                  )
+                                  .then((value) => {
+                                        print("TC Controller"),
+                                        print(tcNoController),
+                                        // qrCodeModel = value,
+                                        qrCodeModel = new QRCodeModel(
+                                          creationDate: value.creationDate,
+                                          eventId: value.eventId,
+                                          eventName: value.eventName,
+                                          firstName: value.firstName,
+                                          lastName: value.lastName,
+                                          userTcNo: value.userTcNo,
+                                        ),
+                                        // print("value in getQRCode Then"),
+                                        // print(value),
+                                        // print(value.eventName),
+                                        // print(value.creationDate),
+                                        // print(value.userTcNo),
+                                        // print(value.firstName),
+                                      })
+                                  .catchError((onError) {
+                                print("Get QRCode in Register::::");
+                                print(onError);
+                              });
+                            });
+                            // response.then((value) =>
+                            //     {qrCodeModel = value, print(qrCodeModel)});
+
+                            Future.delayed(Duration(milliseconds: 500), () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return QRCOdePage(
+                                  qrCode: new QRCodeModel(),
+                                  clearSectors: clearSectors,
+                                  eventId: widget.event.eventId,
+                                  tcNo: tcNoController.text,
+                                  messageResponse: returnMessage,
+                                  qrData: qrCodeModel,
+                                );
+                              }));
+                            });
+                          });
+                        }
                       },
                       child: Text("Register"),
                       style: ButtonStyle(
