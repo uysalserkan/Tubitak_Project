@@ -23,6 +23,7 @@ environment:
 dependencies:
   qr_flutter: ^4.0.0
   # qr_code_scanner: ^0.5.2
+  add_2_calendar: ^2.1.0
   share_plus: ^2.1.4
   path_provider: ^2.0.2
   http: "0.13.3"

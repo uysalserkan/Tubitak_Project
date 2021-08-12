@@ -12,6 +12,7 @@ import 'package:mobile/models/QRCodeModel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
 
 Future<String> getQRData(QRCodeModel model) async {
   print("QRDATAGET:::");
@@ -166,7 +167,27 @@ class _QRCOdePageState extends State<QRCOdePage> {
                 // Navigator.popUntil(context, (route) => route.isFirst);
               },
             ),
-            ElevatedButton(onPressed: () {}, child: Text("Add Remainder"))
+            ElevatedButton(
+                onPressed: () {
+                  final Event event = Event(
+                    title: 'Event title',
+                    description: 'Event description',
+                    location: 'Event location',
+                    startDate: DateTime(2025, 8, 25),
+                    endDate: DateTime(2025, 11, 25),
+                    iosParams: IOSParams(
+                      reminder: Duration(
+                          days:
+                              1), // on iOS, you can set alarm notification after your event.
+                    ),
+                    androidParams: AndroidParams(
+                      emailInvites: [], // on Android, you can add invite emails to your event.
+                    ),
+                  );
+
+                  Add2Calendar.addEvent2Cal(event);
+                },
+                child: Text("Add Remainder"))
           ],
         ),
       ),
